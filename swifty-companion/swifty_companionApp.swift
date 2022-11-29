@@ -6,6 +6,12 @@
 //
 
 import SwiftUI
+import Foundation
+
+func parseQuery(queryString: String) -> map<String> {
+    let test: map<String>;
+    return (test);
+}
 
 @main
 struct swifty_companionApp: App {
@@ -26,6 +32,16 @@ struct swifty_companionApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView(authUrl: authUrl)
+                .onOpenURL { url in
+                    let uri: String = url.host ?? "";
+                    if (uri != "auth") {
+                        exit(1) ;
+                    }
+                    let query: map<String> = parseQuery(url.query);
+//                    let queryString: String = url.query() ?? "";
+//                    let queryTab = queryString.split(separator: "&");
+                    print(query);
+                }
         }
     }
 }
