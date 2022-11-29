@@ -17,7 +17,42 @@ func parseQuery(_ queryString: String) -> Dictionary<String, String> {
     return (query);
 }
 
-func codeToToken(_ client_id: String,_ client_secret: String,_ code: String) -> Void {
+func substr(_ string: String, _ start: Int, _ len: Int) -> String {
+    var newStr: String = String();
+    var i: Int = 0;
+    for char in string {
+        if (i - start == len) {
+            break ;
+        }
+        if (i < start) {
+            i = i + 1;
+            continue ;
+        }
+        newStr.append(char);
+        i = i + 1;
+    }
+    return (newStr);
+}
+
+func jsonToDictionary(_ values: String) -> Dictionary<String, Any> {
+    var dict: Dictionary<String, Any> = Dictionary();
+    let stringNotScope: String = substr(values, 1, values.count - 2);
+    let stringSplit: Array<Substring> = stringNotScope.split(separator: ",");
+    for string in stringSplit {
+        let valueSplit: Array<Substring> = string.split(separator: ":");
+        let key: String = substr(String(valueSplit[0]), 1, valueSplit[0].count - 2);
+        var value: Any;
+        if (valueSplit[1].prefix(1) == "\"") {
+            value = substr(String(valueSplit[1]), 1, valueSplit[1].count - 2);
+        } else {
+            value = Int(valueSplit[1]) ?? -1;
+        }
+        dict[key] = value;
+    }
+    return (dict);
+}
+
+func codeToToken(_ client_id: String,_ client_secret: String,_ code: String) -> Dictionary<String, Any> {
     let grant_type: String = "authorization_code";
     let redirect_uri: String = "swifty-companion://auth";
     let url: URL = URL(string: "https://api.intra.42.fr/oauth/token")!;
@@ -35,20 +70,23 @@ func codeToToken(_ client_id: String,_ client_secret: String,_ code: String) -> 
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.httpBody = jsonData;
-    
+        var json: Dictionary<String, Any> = Dictionary<String, Any>();
         let action = URLSession.shared.dataTask(with: request) {
             (data, response, error) in
-                if let error = error {
-                    print(error)
-                    return
-                }
-                guard let data = data else {
-                    return
-                }
-                print(data, String(data: data, encoding: .utf8) ?? "*unknown encoding*")
+            if let error = error {
+                print(error)
+                return
+            }
+            guard let data = data else { return }
+            let values: String = String(data: data, encoding: .utf8) ?? "";
+            if (values == "") { return ; }
+            json = jsonToDictionary(values);
+            print("Await me pls");
+            print(json);
         };
         action.resume();
-    } catch { return ; }
+        return (json);
+    } catch { return (Dictionary<String, Any>()); }
 }
 
 @main
@@ -72,12 +110,11 @@ struct swifty_companionApp: App {
             ContentView(authUrl: authUrl)
                 .onOpenURL { url in
                     let uri: String = url.host ?? "";
-                    if (uri == "auth") {
-                        let query: Dictionary<String, String> = parseQuery(url.query ?? "");
-                        let code: String = query["code"] ?? "";
-                        if (code == "") { return ; }
-                        codeToToken(UID_42, SECRET_42, code);
-                    }
+                    if (uri != "auth") { return ; }
+                    let query: Dictionary<String, String> = parseQuery(url.query ?? "");
+                    let code: String = query["code"] ?? "";
+                    if (code == "") { return ; }
+                    print(codeToToken(UID_42, SECRET_42, code));
                 }
         }
     }
