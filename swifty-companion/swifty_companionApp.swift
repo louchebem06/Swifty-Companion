@@ -6,11 +6,49 @@
 //
 
 import SwiftUI
-import Foundation
 
-func parseQuery(queryString: String) -> map<String> {
-    let test: map<String>;
-    return (test);
+func parseQuery(_ queryString: String) -> Dictionary<String, String> {
+    var query: Dictionary<String, String> = Dictionary();
+    let values: Array<Substring> = queryString.split(separator: "&");
+    for value in values {
+        let valueQuery: Array<Substring> = value.split(separator: "=");
+        query[String(valueQuery[0])] = String(valueQuery[1]);
+    }
+    return (query);
+}
+
+func codeToToken(_ client_id: String,_ client_secret: String,_ code: String) -> Void {
+    let grant_type: String = "authorization_code";
+    let redirect_uri: String = "swifty-companion://auth";
+    let url: URL = URL(string: "https://api.intra.42.fr/oauth/token")!;
+    let oauth: [String: String] = [
+        "grant_type": grant_type,
+        "client_id": client_id,
+        "client_secret": client_secret,
+        "code": code,
+        "redirect_uri": redirect_uri
+    ]
+    do {
+        let jsonData = try JSONSerialization.data(withJSONObject: oauth)
+        var request = URLRequest(url: url);
+        request.httpMethod = "POST";
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpBody = jsonData;
+    
+        let action = URLSession.shared.dataTask(with: request) {
+            (data, response, error) in
+                if let error = error {
+                    print(error)
+                    return
+                }
+                guard let data = data else {
+                    return
+                }
+                print(data, String(data: data, encoding: .utf8) ?? "*unknown encoding*")
+        };
+        action.resume();
+    } catch { return ; }
 }
 
 @main
@@ -34,13 +72,12 @@ struct swifty_companionApp: App {
             ContentView(authUrl: authUrl)
                 .onOpenURL { url in
                     let uri: String = url.host ?? "";
-                    if (uri != "auth") {
-                        exit(1) ;
+                    if (uri == "auth") {
+                        let query: Dictionary<String, String> = parseQuery(url.query ?? "");
+                        let code: String = query["code"] ?? "";
+                        if (code == "") { return ; }
+                        codeToToken(UID_42, SECRET_42, code);
                     }
-                    let query: map<String> = parseQuery(url.query);
-//                    let queryString: String = url.query() ?? "";
-//                    let queryTab = queryString.split(separator: "&");
-                    print(query);
                 }
         }
     }
