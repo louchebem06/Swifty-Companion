@@ -7,6 +7,28 @@
 
 import SwiftUI
 
+struct Version: Codable {
+    let large: URL
+    let medium: URL
+    let small: URL
+    let micro: URL
+}
+
+struct Image: Codable {
+    let link: URL
+    let versions: Version
+}
+
+struct User: Codable {
+    let id: Int
+    let email: String
+    let login: String
+    let first_name: String
+    let last_name: String
+    let phone: String
+    let image: Image
+}
+
 @main
 struct swifty_companionApp: App {
     private let UID_42: String = ProcessInfo.processInfo.environment["UID_42"] ?? "";
@@ -27,7 +49,7 @@ struct swifty_companionApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView(authUrl: authUrl, isLogin: isLogin, token: token)
+            ContentView(authUrl: authUrl, isLogin: isLogin)
                 .onOpenURL { url in
                     let uri: String = url.host ?? "";
                     if (uri != "auth") { return ; }
@@ -37,6 +59,7 @@ struct swifty_companionApp: App {
                     Task {
                         token = await codeToToken(UID_42, SECRET_42, code);
                         isLogin = true;
+                        Api.setToken(token["access_token"] as? String ?? "");
                     }
                 }
         }

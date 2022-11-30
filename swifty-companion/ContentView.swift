@@ -11,7 +11,6 @@ struct ContentView: View {
     @Environment(\.openURL) private var openURL;
     let authUrl: String;
     let isLogin: Bool;
-    let token: Dictionary<String, Any>;
     
     var body: some View {
         if (!isLogin) {
@@ -23,13 +22,13 @@ struct ContentView: View {
                 Label("Intra 42", systemImage: "terminal")
             }
         } else {
-            ProfilView(token: token);
+            SearchView();
         }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(authUrl: "", isLogin: false, token: [:])
+        ContentView(authUrl: "", isLogin: false);
     }
 }
