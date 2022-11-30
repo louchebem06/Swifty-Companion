@@ -21,7 +21,9 @@ struct SearchView: View {
                 ).padding(15);
                 Button("Search") {
                     Task {
-                        let value = await Api.getValue("/v2/users/\(value.lowercased())");
+                        // TODO protect value exemple "abc abcd" or "{}"
+                        value = value.lowercased();
+                        value = await Api.getValue("/v2/users/\(value)");
                         do {
                             let data = value.data(using: .utf8)!;
                             user = try JSONDecoder().decode(User.self, from: data);

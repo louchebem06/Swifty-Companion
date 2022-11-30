@@ -27,6 +27,7 @@ struct ProfilView: View {
     
     init(user: User) {
         self.user = user;
+        print(user);
     }
 
     var body: some View {
@@ -37,6 +38,8 @@ struct ProfilView: View {
             Text(self.user.last_name ?? "Last Name");
             Text(self.user.email ?? "email");
             Text(self.user.phone ?? "phone");
+            Text(String(self.user.wallet ?? -1));
+            Text(self.user.location ?? "location");
         }
     }
     
