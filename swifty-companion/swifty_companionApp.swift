@@ -52,7 +52,7 @@ func jsonToDictionary(_ values: String) -> Dictionary<String, Any> {
     return (dict);
 }
 
-func codeToToken(_ client_id: String,_ client_secret: String,_ code: String) -> Dictionary<String, Any> {
+func codeToToken(_ client_id: String,_ client_secret: String,_ code: String) async -> Dictionary<String, Any> {
     let grant_type: String = "authorization_code";
     let redirect_uri: String = "swifty-companion://auth";
     let url: URL = URL(string: "https://api.intra.42.fr/oauth/token")!;
@@ -63,6 +63,7 @@ func codeToToken(_ client_id: String,_ client_secret: String,_ code: String) -> 
         "code": code,
         "redirect_uri": redirect_uri
     ]
+    var json: Dictionary<String, Any> = Dictionary<String, Any>();
     do {
         let jsonData = try JSONSerialization.data(withJSONObject: oauth)
         var request = URLRequest(url: url);
@@ -70,23 +71,22 @@ func codeToToken(_ client_id: String,_ client_secret: String,_ code: String) -> 
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.httpBody = jsonData;
-        var json: Dictionary<String, Any> = Dictionary<String, Any>();
-        let action = URLSession.shared.dataTask(with: request) {
-            (data, response, error) in
-            if let error = error {
-                print(error)
-                return
-            }
-            guard let data = data else { return }
-            let values: String = String(data: data, encoding: .utf8) ?? "";
-            if (values == "") { return ; }
-            json = jsonToDictionary(values);
-            print("Await me pls");
-            print(json);
-        };
-        action.resume();
+    
+        let (data, response) = try await URLSession.shared.data(for: request);
+        var code: Int = 404;
+        if let httpResponse = response as? HTTPURLResponse {
+            code = httpResponse.statusCode;
+        } else {
+            return (json);
+        }
+        if (code != 200) {
+            return (json);
+        }
+        let values: String = String(data: data, encoding: .utf8) ?? "";
+        if (values == "") { return (json); }
+        json = jsonToDictionary(values);
         return (json);
-    } catch { return (Dictionary<String, Any>()); }
+    } catch { return (json); }
 }
 
 @main
@@ -114,7 +114,10 @@ struct swifty_companionApp: App {
                     let query: Dictionary<String, String> = parseQuery(url.query ?? "");
                     let code: String = query["code"] ?? "";
                     if (code == "") { return ; }
-                    print(codeToToken(UID_42, SECRET_42, code));
+                    Task {
+                        let token = await codeToToken(UID_42, SECRET_42, code);
+                        print(token);
+                    }
                 }
         }
     }
