@@ -7,31 +7,36 @@
 
 import SwiftUI
 
-struct ProfilView: View {
-
-    var err: Bool;
-    var value: Data;
-    
-    init(login: String) {
-        err = false;
-        Task {
-            value = try await Api.getValue("/v2/users/\(login.lowercased())").data(using: .utf8)!;
-            
-        }
-        do {
-            let newUser: User = try JSONDecoder().decode(User.self, from: value);
-            print(newUser);
-        } catch {
-            print("Error");
-            err = true;
+extension UIImageView {
+    func load(url: URL) {
+        DispatchQueue.global().async { [weak self] in
+            if let data = try? Data(contentsOf: url) {
+                if let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self?.image = image
+                    }
+                }
+            }
         }
     }
+}
+
+struct ProfilView: View {
     
+    var user: User;
+    
+    init(user: User) {
+        self.user = user;
+    }
+
     var body: some View {
-        if (err) {
-            Text("User not found");
-        } else {
-            Text("User Found");
+        VStack {
+            Text(String(self.user.id ?? -1));
+            Text(self.user.login ?? "Login");
+            Text(self.user.first_name ?? "First name");
+            Text(self.user.last_name ?? "Last Name");
+            Text(self.user.email ?? "email");
+            Text(self.user.phone ?? "phone");
         }
     }
     
@@ -39,6 +44,6 @@ struct ProfilView: View {
 
 struct ProfilView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilView(login: "bledda");
+        ProfilView(user: User());
     }
 }

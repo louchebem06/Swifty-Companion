@@ -10,6 +10,7 @@ import SwiftUI
 struct SearchView: View {
     @State private var value: String = "";
     @State private var search: Bool = true;
+    @State private var user: User = User();
     
     var body: some View {
         if (search) {
@@ -19,11 +20,22 @@ struct SearchView: View {
                     text: $value
                 ).padding(15);
                 Button("Search") {
-                    search = false;
+                    Task {
+                        let value = await Api.getValue("/v2/users/\(value.lowercased())");
+                        do {
+                            let data = value.data(using: .utf8)!;
+                            user = try JSONDecoder().decode(User.self, from: data);
+                            if (user.id != nil) {
+                                search = false;
+                            } else {
+                                print("User not found");
+                            }
+                        }
+                    }
                 }
             }
         } else {
-            ProfilView(login: value);
+            ProfilView(user: user);
         }
     }
 }

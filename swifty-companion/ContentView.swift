@@ -9,15 +9,18 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.openURL) private var openURL;
-    let authUrl: String;
+    let authUrl: URL;
     let isLogin: Bool;
+    
+    init(_ authUrl: URL, _ isLogin: Bool) {
+        self.authUrl = authUrl;
+        self.isLogin = isLogin;
+    }
     
     var body: some View {
         if (!isLogin) {
             Button {
-                if let url = URL(string: authUrl) {
-                    openURL(url);
-                }
+                openURL(authUrl);
             } label: {
                 Label("Intra 42", systemImage: "terminal")
             }
@@ -29,6 +32,6 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(authUrl: "", isLogin: false);
+        ContentView(URL(string: "http://google.fr")!, false);
     }
 }
