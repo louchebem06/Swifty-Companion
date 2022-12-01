@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+
 struct ProfilView: View {
     
     var user: User;
@@ -16,6 +17,7 @@ struct ProfilView: View {
 
     var body: some View {
         VStack {
+            AsyncImage(url: user.image?.versions.medium);
             Text(String(self.user.id ?? -1));
             Text(self.user.login ?? "Login");
             Text(self.user.first_name ?? "First name");
