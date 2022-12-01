@@ -7,12 +7,6 @@
 
 import Foundation
 
-/*
- https://api.intra.42.fr/apidoc/2.0/users/show.html
- - skill, level and percent
- - project completed and fail
-*/
-
 struct Version: Codable {
     let large: URL
     let medium: URL
@@ -26,13 +20,37 @@ struct Image: Codable {
 }
 
 struct Cursus: Codable {
+    let id: Int
     let name: String
+    let kind: String
+}
+
+struct Skill: Codable {
+    let id: Int
+    let name: String
+    let level: Double
 }
 
 struct CursusUser: Codable {
-    let level: Int
-//    let skills: [Any]
+    let id: Int
+    let level: Double
     let cursus: Cursus
+    let skills: [Skill?]
+}
+
+struct Project: Codable {
+    let id: Int
+    let name: String
+}
+
+struct ProjectsUser: Codable {
+    let id: Int
+    let occurrence: Int
+    let final_mark: Int?
+    let status: String
+    let validated: Bool?
+    let project: Project
+    let marked: Bool
 }
 
 struct User: Codable {
@@ -45,5 +63,6 @@ struct User: Codable {
     var image: Image?
     var wallet: Int?
     var location: String?
-    //var cursus_users: [CursusUser?]?
+    var cursus_users: [CursusUser?]?
+    var projects_users: [ProjectsUser?]?
 }
