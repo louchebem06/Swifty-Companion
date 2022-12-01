@@ -25,8 +25,8 @@ struct Cursus: Codable {
     let kind: String
 }
 
-struct Skill: Codable {
-    let id: Int
+struct Skill: Codable, Identifiable {
+    var id = UUID()
     let name: String
     let level: Double
 }

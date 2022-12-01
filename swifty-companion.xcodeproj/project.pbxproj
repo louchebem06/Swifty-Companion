@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C162F87429390C0F003DEED9 /* GraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C162F87329390C0F003DEED9 /* GraphView.swift */; };
 		C1D75998293762C400D96155 /* utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D75997293762C400D96155 /* utils.swift */; };
 		C1D7599C2937666300D96155 /* ProfilView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D7599B2937666300D96155 /* ProfilView.swift */; };
 		C1D7599E2937685E00D96155 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D7599D2937685E00D96155 /* ContentView.swift */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C162F87329390C0F003DEED9 /* GraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphView.swift; sourceTree = "<group>"; };
 		C1D75997293762C400D96155 /* utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = utils.swift; sourceTree = "<group>"; };
 		C1D7599B2937666300D96155 /* ProfilView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilView.swift; sourceTree = "<group>"; };
 		C1D7599D2937685E00D96155 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -75,6 +77,7 @@
 				C1D759A12937A02800D96155 /* SearchView.swift */,
 				C1D759A32937F7AC00D96155 /* User.swift */,
 				C1D759A52937F8F500D96155 /* Token.swift */,
+				C162F87329390C0F003DEED9 /* GraphView.swift */,
 			);
 			path = "swifty-companion";
 			sourceTree = "<group>";
@@ -159,6 +162,7 @@
 			files = (
 				C1D75998293762C400D96155 /* utils.swift in Sources */,
 				C1D7599C2937666300D96155 /* ProfilView.swift in Sources */,
+				C162F87429390C0F003DEED9 /* GraphView.swift in Sources */,
 				C1D7599E2937685E00D96155 /* ContentView.swift in Sources */,
 				C1D759A029377B8500D96155 /* Api.swift in Sources */,
 				C1D759A22937A02800D96155 /* SearchView.swift in Sources */,
