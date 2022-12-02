@@ -24,7 +24,7 @@ class Graph {
 }
 
 struct GraphView: View {
-    let skills: [Skill];
+    let skills: [Skill?];
     var graph: Graph;
     
     init(skills: [Skill]) {
@@ -33,10 +33,10 @@ struct GraphView: View {
     }
     
     var body: some View {
-        ZStack {
-            ForEach(skills) { skill in
-                Text(skill.name).offset(x: graph.getX(), y: graph.getY());
-            }
+        VStack {
+//            ForEach(skills) { skill in
+//                Text(skill.name).offset(x: graph.getX(), y: graph.getY());
+//            }
         }
     }
 }

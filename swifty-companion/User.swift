@@ -20,31 +20,27 @@ struct Image: Codable {
 }
 
 struct Cursus: Codable {
-    let id: Int
     let name: String
     let kind: String
 }
 
-struct Skill: Codable, Identifiable {
-    var id = UUID()
+struct Skill: Codable {
     let name: String
     let level: Double
 }
 
 struct CursusUser: Codable {
-    let id: Int
     let level: Double
     let cursus: Cursus
-    let skills: [Skill?]
+    let skills: [Skill]
+    let grade: String?
 }
 
 struct Project: Codable {
-    let id: Int
     let name: String
 }
 
 struct ProjectsUser: Codable {
-    let id: Int
     let occurrence: Int
     let final_mark: Int?
     let status: String
@@ -63,6 +59,7 @@ struct User: Codable {
     var image: Image?
     var wallet: Int?
     var location: String?
+    var correction_point: Int?
     var cursus_users: [CursusUser?]?
     var projects_users: [ProjectsUser?]?
 }
