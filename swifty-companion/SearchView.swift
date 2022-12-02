@@ -33,11 +33,15 @@ struct SearchView: View {
                             tmpInput = tmpInput.replacingOccurrences(of: " ", with: "-", options: .literal, range: nil);
                             // TODO check if content only a-z 0-9 and -
                             // OR Api getValue() thrown generation URL
-                            let value: String = await Api.getValue("/v2/users/\(tmpInput)");
+                            var value: String = await Api.getValue("/v2/users/\(tmpInput)");
                             do {
-                                let data: Data = value.data(using: .utf8)!;
+                                var data: Data = value.data(using: .utf8)!;
                                 user = try JSONDecoder().decode(User.self, from: data);
                                 if (user.id != nil) {
+									let idUserString: String = String(user.id!);
+									value = await Api.getValue("/v2/users/\(idUserString)/coalitions");
+									data = value.data(using: .utf8)!;
+									user.coalitions = try JSONDecoder().decode([Coalition].self, from: data);
                                     search = false;
                                 } else {
                                     titleError = "User not found";

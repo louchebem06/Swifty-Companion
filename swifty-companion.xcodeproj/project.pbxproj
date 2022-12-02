@@ -19,6 +19,7 @@
 		C1D986D029354076002E1ACE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C1D986CF29354076002E1ACE /* Assets.xcassets */; };
 		C1D986D329354076002E1ACE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C1D986D229354076002E1ACE /* Preview Assets.xcassets */; };
 		C1DD6CC6293A43B000F63065 /* IntraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DD6CC5293A43B000F63065 /* IntraView.swift */; };
+		C1DD6CC8293A714000F63065 /* ProjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DD6CC7293A714000F63065 /* ProjectView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,7 @@
 		C1D986CF29354076002E1ACE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C1D986D229354076002E1ACE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C1DD6CC5293A43B000F63065 /* IntraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntraView.swift; sourceTree = "<group>"; };
+		C1DD6CC7293A714000F63065 /* ProjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectView.swift; sourceTree = "<group>"; };
 		C1E64AC2293580000061A73A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -81,6 +83,7 @@
 				C1D759A52937F8F500D96155 /* Token.swift */,
 				C162F87329390C0F003DEED9 /* GraphView.swift */,
 				C1DD6CC5293A43B000F63065 /* IntraView.swift */,
+				C1DD6CC7293A714000F63065 /* ProjectView.swift */,
 			);
 			path = "swifty-companion";
 			sourceTree = "<group>";
@@ -164,6 +167,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C1D75998293762C400D96155 /* utils.swift in Sources */,
+				C1DD6CC8293A714000F63065 /* ProjectView.swift in Sources */,
 				C1D7599C2937666300D96155 /* ProfilView.swift in Sources */,
 				C162F87429390C0F003DEED9 /* GraphView.swift in Sources */,
 				C1DD6CC6293A43B000F63065 /* IntraView.swift in Sources */,

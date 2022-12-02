@@ -14,14 +14,22 @@ struct IntraView: View {
         self.user = user;
     }
     var body: some View {
-        VStack {
-            ProfilView(user);
-        }
+		ScrollView {
+			VStack {
+				ProfilView(user);
+				if (user.cursus_users != nil) {
+					GraphView(user.cursus_users!);
+				}
+				if (user.projects_users != nil) {
+					ProjectView(user.projects_users!);
+				}
+			}
+		}
     }
 }
 
 struct IntraView_Previews: PreviewProvider {
     static var previews: some View {
-        IntraView(User())
+        IntraView(User());
     }
 }

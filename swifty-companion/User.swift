@@ -49,6 +49,14 @@ struct ProjectsUser: Codable {
     let marked: Bool
 }
 
+struct Coalition: Codable {
+	let id: Int
+	let name: String
+	let image_url: URL
+	let color: String
+	let score: Int
+}
+
 struct User: Codable {
     var id: Int?
     var email: String?
@@ -62,4 +70,5 @@ struct User: Codable {
     var correction_point: Int?
     var cursus_users: [CursusUser?]?
     var projects_users: [ProjectsUser?]?
+	var coalitions: [Coalition?]?
 }

@@ -7,63 +7,51 @@
 
 import SwiftUI
 
-class Graph {
-    var nb: Int;
-    
-    init(_ nb: Int) {
-        self.nb = nb;
-    }
-    
-    func getX() -> CGFloat {
-        return (0);
-    }
-    
-    func getY() -> CGFloat {
-        return (0);
-    }
-}
-
 struct GraphView: View {
-    let skills: [Skill?];
-    var graph: Graph;
+    let cursusUser: CursusUser?;
     
-    init(skills: [Skill]) {
-        self.skills = skills;
-        graph = Graph(skills.count);
+    init(_ cursusUser: [CursusUser?]) {
+        if (cursusUser.count == 0) {
+            self.cursusUser = nil;
+        } else {
+            self.cursusUser = cursusUser[cursusUser.count - 1];
+        }
     }
     
     var body: some View {
         VStack {
-//            ForEach(skills) { skill in
-//                Text(skill.name).offset(x: graph.getX(), y: graph.getY());
-//            }
+            HStack {
+                Text("LEVEL: ");
+                Text(String(cursusUser?.level ?? 0.0));
+            }
+            HStack {
+                Text("CURSUS: ");
+                Text(cursusUser?.cursus.name ?? "Undefined");
+            }
+            HStack {
+                Text("Grade: ");
+                Text(cursusUser?.grade ?? "Undefined");
+            }
+            VStack {
+                let nbOfElement: Int = cursusUser?.skills.count ?? 0;
+                ForEach(0..<nbOfElement) { i in
+					let name: String = cursusUser!.skills[i].name;
+                    let lvl: Double = cursusUser!.skills[i].level;
+                    let percent: Double = lvl * 100 / 20 / 100;
+                    ProgressView(value: percent) {
+                        Text(name);
+                    };
+                }
+                if (nbOfElement == 0) {
+                    Text("Skill undefined");
+                }
+            }
         }
     }
 }
 
 struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
-        GraphView(skills: [
-            Skill(name: "First", level: 1.0),
-            Skill(name: "Second", level: 1.0),
-            Skill(name: "First", level: 1.0),
-            Skill(name: "Second", level: 1.0),
-            Skill(name: "First", level: 1.0),
-            Skill(name: "Second", level: 1.0),
-            Skill(name: "First", level: 1.0),
-            Skill(name: "Second", level: 1.0),
-            Skill(name: "First", level: 1.0),
-            Skill(name: "Second", level: 1.0),
-            Skill(name: "First", level: 1.0),
-            Skill(name: "Second", level: 1.0),
-            Skill(name: "First", level: 1.0),
-            Skill(name: "Second", level: 1.0),
-            Skill(name: "First", level: 1.0),
-            Skill(name: "Second", level: 1.0),
-            Skill(name: "First", level: 1.0),
-            Skill(name: "Second", level: 1.0),
-            Skill(name: "First", level: 1.0),
-            Skill(name: "Second", level: 1.0)
-        ])
+        GraphView([])
     }
 }
