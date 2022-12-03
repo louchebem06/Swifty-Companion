@@ -14,7 +14,7 @@ struct Version: Codable {
     let micro: URL
 }
 
-struct Image: Codable {
+struct ImageProfil: Codable {
     let link: URL
     let versions: Version
 }
@@ -80,7 +80,7 @@ struct User: Codable {
     var first_name: String?
     var last_name: String?
     var phone: String?
-    var image: Image?
+    var image: ImageProfil?
     var wallet: Int?
     var location: String?
     var correction_point: Int?

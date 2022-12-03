@@ -6,6 +6,13 @@
 //
 
 import SwiftUI
+import SDWebImageSVGCoder
+
+private extension swifty_companionApp {
+	func setUpDependencies() {
+		SDImageCodersManager.shared.addCoder(SDImageSVGCoder.shared)
+	}
+}
 
 @main
 struct swifty_companionApp: App {
@@ -25,6 +32,7 @@ struct swifty_companionApp: App {
             URLQueryItem(name: "redirect_uri", value: Api.redirect_uri),
             URLQueryItem(name: "response_type", value: "code")
         ]);
+		setUpDependencies()
     }
     
     var body: some Scene {

@@ -19,7 +19,11 @@ struct SearchView: View {
     
     var body: some View {
         if (search) {
-            ZStack {
+            VStack {
+				Image("logo42Nice")
+					.resizable()
+					.scaledToFit()
+					.frame(width: 100, height: 100);
                 HStack {
                     TextField(
                         "Search login 42",
