@@ -15,23 +15,31 @@ struct GraphView: View {
             self.cursusUser = nil;
         } else {
             self.cursusUser = cursusUser[cursusUser.count - 1];
+			Task {
+				let cursus: CursusUser = cursusUser[cursusUser.count - 1]!;
+				let idString: String = String(cursus.cursus.id);
+				let value = await Api.getValue("/v2/cursus/\(idString)/skills");
+				// print(value);
+			}
         }
     }
     
     var body: some View {
-        VStack {
-            HStack {
-                Text("LEVEL: ");
-                Text(String(cursusUser?.level ?? 0.0));
-            }
-            HStack {
-                Text("CURSUS: ");
-                Text(cursusUser?.cursus.name ?? "Undefined");
-            }
-            HStack {
-                Text("Grade: ");
-                Text(cursusUser?.grade ?? "Undefined");
-            }
+		VStack {
+			VStack {
+				HStack {
+					Text("LEVEL: ");
+					Text(String(cursusUser?.level ?? 0.0));
+				}
+				HStack {
+					Text("CURSUS: ");
+					Text(cursusUser?.cursus.name ?? "Undefined");
+				}
+				HStack {
+					Text("Grade: ");
+					Text(cursusUser?.grade ?? "Undefined");
+				}
+			};
             VStack {
                 let nbOfElement: Int = cursusUser?.skills.count ?? 0;
                 ForEach(0..<nbOfElement) { i in
@@ -45,13 +53,7 @@ struct GraphView: View {
                 if (nbOfElement == 0) {
                     Text("Skill undefined");
                 }
-            }
+			};
         }
-    }
-}
-
-struct GraphView_Previews: PreviewProvider {
-    static var previews: some View {
-        GraphView([])
     }
 }

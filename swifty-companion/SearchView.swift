@@ -15,6 +15,7 @@ struct SearchView: View {
     @State private var titleError: String = "";
     @State private var messageError: String = "";
     @State private var isRequestInProgress: Bool = false;
+	@State private var disabledButton: Bool = false;
     
     var body: some View {
         if (search) {
@@ -23,40 +24,45 @@ struct SearchView: View {
                     TextField(
                         "Search login 42",
                         text: $tmpInput
-                    ).padding(15)
-                        .buttonBorderShape(.roundedRectangle(radius: 10));
+                    ).padding(15);
                     
                     Button("Search") {
-                        Task () {
-                            isRequestInProgress = true;
-                            tmpInput = tmpInput.lowercased();
-                            tmpInput = tmpInput.replacingOccurrences(of: " ", with: "-", options: .literal, range: nil);
-                            // TODO check if content only a-z 0-9 and -
-                            // OR Api getValue() thrown generation URL
-                            var value: String = await Api.getValue("/v2/users/\(tmpInput)");
-                            do {
-                                var data: Data = value.data(using: .utf8)!;
-                                user = try JSONDecoder().decode(User.self, from: data);
-                                if (user.id != nil) {
-									let idUserString: String = String(user.id!);
-									value = await Api.getValue("/v2/users/\(idUserString)/coalitions");
-									data = value.data(using: .utf8)!;
-									user.coalitions = try JSONDecoder().decode([Coalition].self, from: data);
-                                    search = false;
-                                } else {
-                                    titleError = "User not found";
-                                    messageError = "\(tmpInput) is not valid user 42";
-                                    showAlert = true;
-                                }
-                            } catch {
-                                titleError = "Request error";
-                                messageError = "Error: \(error)";
-                                showAlert = true;
-                            }
-                            isRequestInProgress = false;
-                        }
-                    }.padding(15)
-                        .buttonBorderShape(.roundedRectangle)
+						disabledButton = true;
+						Task () {
+							isRequestInProgress = true;
+							tmpInput = tmpInput.lowercased();
+							tmpInput = tmpInput.replacingOccurrences(of: " ", with: "-", options: .literal, range: nil);
+							var value: String = await Api.getValue("/v2/users/\(tmpInput)");
+							if (value == "" || tmpInput.isEmpty) {
+								titleError = "Invalid login";
+								messageError = "'\(tmpInput)' is invalid";
+								showAlert = true;
+							} else {
+								do {
+									var data: Data = value.data(using: .utf8)!;
+									user = try JSONDecoder().decode(User.self, from: data);
+									if (user.id != nil) {
+										let idUserString: String = String(user.id!);
+										value = await Api.getValue("/v2/users/\(idUserString)/coalitions");
+										data = value.data(using: .utf8)!;
+										user.coalitions = try JSONDecoder().decode([Coalition].self, from: data);
+										search = false;
+									} else {
+										titleError = "User not found";
+										messageError = "\(tmpInput) is not valid user 42";
+										showAlert = true;
+									}
+								} catch {
+									titleError = "Request error";
+									messageError = "Error: \(error)";
+									showAlert = true;
+								}
+							}
+							isRequestInProgress = false;
+							disabledButton = false;
+						}
+					}.disabled(disabledButton)
+						.padding(15)
                         .alert(isPresented: $showAlert) {
                             Alert(
                                 title: Text(titleError),

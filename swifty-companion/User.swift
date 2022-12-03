@@ -20,6 +20,7 @@ struct Image: Codable {
 }
 
 struct Cursus: Codable {
+	let id: Int
     let name: String
     let kind: String
 }
@@ -30,6 +31,7 @@ struct Skill: Codable {
 }
 
 struct CursusUser: Codable {
+	let id: Int
     let level: Double
     let cursus: Cursus
     let skills: [Skill]
@@ -37,7 +39,9 @@ struct CursusUser: Codable {
 }
 
 struct Project: Codable {
+	let id: Int
     let name: String
+	let parent_id: Int?
 }
 
 struct ProjectsUser: Codable {
@@ -47,6 +51,11 @@ struct ProjectsUser: Codable {
     let validated: Bool?
     let project: Project
     let marked: Bool
+	let cursus_ids: [Int]
+	let marked_at: String?
+	let retriable_at: String?
+	let created_at: String
+	let updated_at: String
 }
 
 struct Coalition: Codable {

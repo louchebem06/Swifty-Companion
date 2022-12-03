@@ -12,7 +12,6 @@ class Api {
     static private var secret: String = "";
     static private var token: Token = Token();
 	static private let limitRate: Int = 2;
-	static private var lastRequest: Date = Date();
 	static private var nbOfRequest: Int = 0;
     
     static public let baseUrl: String = "https://api.intra.42.fr";
@@ -26,22 +25,22 @@ class Api {
     public static func getValue(_ apiUrl: String) async -> String {
 		do {
 			if (nbOfRequest == limitRate) {
-				if (lastRequest == Date()) {
-					sleep(1)
-					nbOfRequest = 0;
-				}
+				sleep(1);
+				nbOfRequest = 0;
 			}
-			let url: URL = URL(string: "\(Api.baseUrl)\(apiUrl)")!;
-			var request = URLRequest(url: url);
+			nbOfRequest += 1;
+			let url: URL? = URL(string: "\(Api.baseUrl)\(apiUrl)");
+			if (url == nil) {
+				return ("");
+			}
+			var request = URLRequest(url: url!);
 			request.httpMethod = "GET";
 			request.setValue("\(Api.token.token_type!) \(Api.token.access_token!)", forHTTPHeaderField: "Authorization");
 			let (data, _) = try await URLSession.shared.data(for: request);
 			let jsonString = String(data: data, encoding: .utf8)!;
-			lastRequest = Date();
-			nbOfRequest += 1;
 			return (jsonString);
 		} catch {
-			fatalError("Error get value");
+			return ("");
 		}
     }
     

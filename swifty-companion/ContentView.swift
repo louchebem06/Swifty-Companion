@@ -22,7 +22,7 @@ struct ContentView: View {
             Button {
                 openURL(authUrl);
             } label: {
-                Label("Intra 42", systemImage: "terminal")
+                Label("Login to intra", systemImage: "network")
             }
         } else {
             SearchView();

@@ -18,6 +18,9 @@ struct ProfilView: View {
         self.user = user;
 		self.coalition = user.coalitions![0]!;
 		self.colorCoa = hexStringToColor(self.coalition.color);
+
+		// This not functional other 42 only 42Nice
+		// API get background img in not found
 		backgroundCoa = URL(string: "https://cdn.intra.42.fr/coalition/cover/\(self.coalition.id)/bg_classic_\(self.coalition.name.lowercased()).jpg")!;
     }
 

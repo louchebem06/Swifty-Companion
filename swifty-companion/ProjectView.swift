@@ -8,61 +8,80 @@
 import SwiftUI
 
 struct ProjectView: View {
-	let projects: [ProjectsUser?];
-	let projectFound: Bool;
+	var projectsDictionary: Dictionary<Int, [ProjectsUser]> = Dictionary<Int, [ProjectsUser]>();
+	let cursusId: Int;
 	
-	init(_ projects: [ProjectsUser?]) {
-		self.projects = projects;
-		if (projects.count == 0) {
-			projectFound = false;
-		} else {
-			projectFound = true;
+	init(_ projects: [ProjectsUser?], _ cursusId: Int) {
+		self.cursusId = cursusId;
+		if (projects.count != 0) {
+			createDictionary(projects);
 		}
 	}
 	
-	func getColor(_ color: String) -> Color {
-		switch(color) {
-		case "finished":
-			return (Color.red);
-		default:
-			return (Color.green);
-		}
-	}
-	
-    var body: some View {
-		VStack {
-			if (!projectFound) {
-				Text("Project not found")
-			} else {
-				ForEach (0..<projects.count) {i in
-					let occurrence: Int = projects[i]!.occurrence;
-					let final_mark: Int? = projects[i]!.final_mark;
-					let status: String = projects[i]!.status;
-					let validated: Bool? = projects[i]!.validated;
-					let name: String = projects[i]!.project.name;
-					let marked: Bool = projects[i]!.marked;
-					var color: Color = getColor(status);
-					VStack {
-						Text(String(occurrence));
-						if (final_mark != nil) {
-							Text(String(final_mark!));
-						}
-						Text(status);
-						if (validated != nil) {
-							Text(String(validated!));
-						}
-						Text(name);
-						Text(String(marked));
-					}.background(color)
-						.padding(10);
+	mutating func createDictionary(_ projects: [ProjectsUser?]) {
+		for project in projects {
+			let id: Int = project!.project.id;
+			let parent_id: Int? = project?.project.parent_id;
+			let cursus_ids: [Int] = project!.cursus_ids;
+			var isGoodCursus: Bool = false;
+			cursus_ids.forEach({id in
+				if (id == cursusId) {
+					isGoodCursus = true;
+				}
+			})
+			if (isGoodCursus) {
+				if (parent_id == nil) {
+					if (projectsDictionary[id] == nil) {
+						projectsDictionary[id] = [project!]
+					} else {
+						projectsDictionary[id]!.append(project!)
+					}
+				} else {
+					if (projectsDictionary[parent_id!] == nil) {
+						projectsDictionary[parent_id!] = [project!]
+					} else {
+						projectsDictionary[parent_id!]!.append(project!)
+					}
 				}
 			}
 		}
-    }
-}
+	}
+	
+	func getProject(_ project: ProjectsUser) -> some View {
+		return (
+			VStack {
+				Text("\(project.project.name) \(project.occurrence)");
+			}
+		)
+	}
+	
+	func getProjects(_ index: Int) -> some View {
+		var i = 0;
+		var values: [ProjectsUser] = [ProjectsUser]();
 
-struct ProjectView_Previews: PreviewProvider {
-    static var previews: some View {
-        ProjectView([])
+		projectsDictionary.forEach({k, v in
+			if (i == index) {
+				values = v;
+			}
+			i += 1;
+		})
+		return (
+			VStack {
+				ForEach(0..<values.count) {index in
+					getProject(values[index]);
+				}
+				Text("");
+			}
+		)
+	}
+
+    var body: some View {
+		if (projectsDictionary.isEmpty) {
+			Text("Project not found")
+		} else {
+			ForEach(0..<projectsDictionary.count) {index in
+				getProjects(index)
+			}
+		}
     }
 }

@@ -8,28 +8,40 @@
 import SwiftUI
 
 struct IntraView: View {
+	@State private var search: Bool = false
     let user: User;
+	let cursusId: Int;
     
     init(_ user: User) {
         self.user = user;
+		let cursus_users: [CursusUser?] = user.cursus_users!;
+		cursusId = cursus_users[cursus_users.count - 1]!.cursus.id;
     }
+	
     var body: some View {
-		ScrollView {
-			VStack {
-				ProfilView(user);
-				if (user.cursus_users != nil) {
-					GraphView(user.cursus_users!);
-				}
-				if (user.projects_users != nil) {
-					ProjectView(user.projects_users!);
+		if (search) {
+			SearchView()
+		} else {
+			NavigationView {
+				ScrollView {
+					VStack {
+						ProfilView(user);
+						if (user.cursus_users != nil) {
+							GraphView(user.cursus_users!);
+						}
+						if (user.projects_users != nil) {
+							ProjectView(user.projects_users!, cursusId);
+						}
+					}.navigationTitle("42 Profil")
+						.toolbar {
+							ToolbarItem(placement: .navigationBarLeading) {
+								Button("Back") {
+									search = true;
+								}
+							}
+						}
 				}
 			}
 		}
-    }
-}
-
-struct IntraView_Previews: PreviewProvider {
-    static var previews: some View {
-        IntraView(User());
     }
 }
