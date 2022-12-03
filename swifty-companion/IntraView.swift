@@ -11,11 +11,13 @@ struct IntraView: View {
 	@State private var search: Bool = false
     let user: User;
 	let cursusId: Int;
+	let colorCoa: Color;
     
     init(_ user: User) {
         self.user = user;
 		let cursus_users: [CursusUser?] = user.cursus_users!;
 		cursusId = cursus_users[cursus_users.count - 1]!.cursus.id;
+		colorCoa = hexStringToColor(user.coalitions![0]!.color);
     }
 	
     var body: some View {
@@ -27,7 +29,7 @@ struct IntraView: View {
 					VStack {
 						ProfilView(user);
 						if (user.cursus_users != nil) {
-							GraphView(user.cursus_users!);
+							GraphView(user.cursus_users!, colorCoa);
 						}
 						if (user.projects_users != nil) {
 							ProjectView(user.projects_users!, cursusId);
