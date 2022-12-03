@@ -55,14 +55,8 @@ struct ProjectsUser: Codable {
     let occurrence: Int
     let final_mark: Int?
     let status: String
-    let validated: Bool?
     let project: Project
-    let marked: Bool
 	let cursus_ids: [Int]
-	let marked_at: String?
-	let retriable_at: String?
-	let created_at: String
-	let updated_at: String
 }
 
 struct Coalition: Codable {

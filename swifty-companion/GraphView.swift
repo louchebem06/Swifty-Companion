@@ -22,6 +22,13 @@ struct GraphView: View {
 	
     var body: some View {
 		VStack {
+			HStack {
+				Text("\(cursusUser?.cursus.name ?? "Undefined") - \(cursusUser?.grade ?? "Undefined")")
+					.font(.system(size:12))
+					.fontWeight(.bold)
+					.foregroundColor(colorCoa);
+			};
+			
 			VStack {
 				GeometryReader { geometry in
 					let level: Double = cursusUser?.level ?? 0.0;
@@ -45,16 +52,7 @@ struct GraphView: View {
 							.foregroundColor(Color.white);
 					};
 				};
-				
-				HStack {
-					Text("CURSUS: ");
-					Text(cursusUser?.cursus.name ?? "Undefined");
-				}
-				HStack {
-					Text("Grade: ");
-					Text(cursusUser?.grade ?? "Undefined");
-				}
-			};
+			}.padding(.bottom, 40);
 			
             VStack {
                 let nbOfElement: Int = cursusUser?.skills.count ?? 0;

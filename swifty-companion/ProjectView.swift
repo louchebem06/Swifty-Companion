@@ -7,81 +7,100 @@
 
 import SwiftUI
 
+struct ProjectsItem: Identifiable {
+	var id = UUID()
+	var id42: Int
+	var occurrence: Int
+	var name: String
+	var final_mark: Int?
+	var status: String
+	var parent_id: Int?
+	var child: [ProjectsItem]? = nil;
+}
+
 struct ProjectView: View {
-	var projectsDictionary: Dictionary<Int, [ProjectsUser]> = Dictionary<Int, [ProjectsUser]>();
 	let cursusId: Int;
+	let projects: [ProjectsUser?];
+	
+	var values: [ProjectsItem] = [];
 	
 	init(_ projects: [ProjectsUser?], _ cursusId: Int) {
 		self.cursusId = cursusId;
-		if (projects.count != 0) {
-			createDictionary(projects);
-		}
-	}
-	
-	mutating func createDictionary(_ projects: [ProjectsUser?]) {
+		self.projects = projects;
 		for project in projects {
-			let id: Int = project!.project.id;
-			let parent_id: Int? = project?.project.parent_id;
-			let cursus_ids: [Int] = project!.cursus_ids;
-			var isGoodCursus: Bool = false;
-			cursus_ids.forEach({id in
-				if (id == cursusId) {
-					isGoodCursus = true;
+			if (project?.project.parent_id != nil) {
+				continue ;
+			}
+			let id = project!.project.id;
+			let name = project!.project.name;
+			let occurrence = project!.occurrence;
+			let final_mark = project?.final_mark;
+			let status = project!.status;
+			let item = ProjectsItem(
+				id42: id,
+				occurrence: occurrence,
+				name: name,
+				final_mark: final_mark,
+				status: status
+			);
+			for cursus in project!.cursus_ids {
+				if (cursus == cursusId) {
+					values.append(item);
+					break ;
 				}
-			})
-			if (isGoodCursus) {
-				if (parent_id == nil) {
-					if (projectsDictionary[id] == nil) {
-						projectsDictionary[id] = [project!]
-					} else {
-						projectsDictionary[id]!.append(project!)
+			}
+		}
+		for project in projects {
+			if (project?.project.parent_id == nil) {
+				continue ;
+			}
+			let id = project!.project.id;
+			let name = project!.project.name;
+			let occurrence = project!.occurrence;
+			let final_mark = project?.final_mark;
+			let status = project!.status;
+			let parent_id = project?.project.parent_id!;
+			let item = ProjectsItem(
+				id42: id,
+				occurrence: occurrence,
+				name: name,
+				final_mark: final_mark,
+				status: status,
+				parent_id: parent_id
+			);
+			for cursus in project!.cursus_ids {
+				if (cursus == cursusId) {
+					for i in 0..<values.count {
+						if (values[i].id42 == item.parent_id) {
+							if (values[i].child == nil) {
+								values[i].child = [];
+							}
+							values[i].child!.append(item);
+							break ;
+						}
 					}
-				} else {
-					if (projectsDictionary[parent_id!] == nil) {
-						projectsDictionary[parent_id!] = [project!]
-					} else {
-						projectsDictionary[parent_id!]!.append(project!)
-					}
+					break ;
 				}
 			}
 		}
 	}
 	
-	func getProject(_ project: ProjectsUser) -> some View {
-		return (
-			VStack {
-				Text("\(project.project.name) \(project.occurrence)");
-			}
-		)
-	}
-	
-	func getProjects(_ index: Int) -> some View {
-		var i = 0;
-		var values: [ProjectsUser] = [ProjectsUser]();
-
-		projectsDictionary.forEach({k, v in
-			if (i == index) {
-				values = v;
-			}
-			i += 1;
-		})
-		return (
-			VStack {
-				ForEach(0..<values.count, id: \.self) {index in
-					getProject(values[index]);
-				}
-				Text("");
-			}
-		)
+	func getItem(_ item: ProjectsItem) -> some View {
+		HStack {
+			Text("\(item.name)");
+			Spacer();
+		}
 	}
 
     var body: some View {
-		if (projectsDictionary.isEmpty) {
+		if (projects.isEmpty) {
 			Text("Project not found")
 		} else {
-			ForEach(0..<projectsDictionary.count, id: \.self) {index in
-				getProjects(index)
-			}
+			VStack(alignment: .leading, spacing: 20) {
+				ForEach(values) {value in
+					getItem(value);
+				}
+			}.padding(10);
 		}
-    }
+	}
 }
