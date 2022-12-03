@@ -138,6 +138,7 @@ struct ProfilView: View {
                     }
                 };
             }.padding(10);
+			Spacer()
 		}.background(
 			AsyncImage(
 				url: backgroundCoa,
@@ -150,7 +151,8 @@ struct ProfilView: View {
 			   }
 			)
 		)
-		.cornerRadius(10);
+		.cornerRadius(10)
+		.padding(10);
     }
     
 }
