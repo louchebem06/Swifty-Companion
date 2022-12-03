@@ -18,7 +18,7 @@ struct GraphView: View {
 			Task {
 				let cursus: CursusUser = cursusUser[cursusUser.count - 1]!;
 				let idString: String = String(cursus.cursus.id);
-				let value = await Api.getValue("/v2/cursus/\(idString)/skills");
+				let _ = await Api.getValue("/v2/cursus/\(idString)/skills"); // value
 				// print(value);
 			}
         }
@@ -42,7 +42,7 @@ struct GraphView: View {
 			};
             VStack {
                 let nbOfElement: Int = cursusUser?.skills.count ?? 0;
-                ForEach(0..<nbOfElement) { i in
+                ForEach(0..<nbOfElement, id: \.self) { i in
 					let name: String = cursusUser!.skills[i].name;
                     let lvl: Double = cursusUser!.skills[i].level;
                     let percent: Double = lvl * 100 / 20 / 100;

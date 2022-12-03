@@ -67,7 +67,7 @@ struct ProjectView: View {
 		})
 		return (
 			VStack {
-				ForEach(0..<values.count) {index in
+				ForEach(0..<values.count, id: \.self) {index in
 					getProject(values[index]);
 				}
 				Text("");
@@ -79,7 +79,7 @@ struct ProjectView: View {
 		if (projectsDictionary.isEmpty) {
 			Text("Project not found")
 		} else {
-			ForEach(0..<projectsDictionary.count) {index in
+			ForEach(0..<projectsDictionary.count, id: \.self) {index in
 				getProjects(index)
 			}
 		}
