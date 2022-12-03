@@ -30,11 +30,18 @@ struct Skill: Codable {
     let level: Double
 }
 
+struct SkillItem: Codable {
+	let id: Int
+	let slug: String
+	let name: String
+	let created_at: String
+}
+
 struct CursusUser: Codable {
 	let id: Int
     let level: Double
     let cursus: Cursus
-    let skills: [Skill]
+    var skills: [Skill]
     let grade: String?
 }
 

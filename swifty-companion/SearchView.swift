@@ -46,6 +46,24 @@ struct SearchView: View {
 										value = await Api.getValue("/v2/users/\(idUserString)/coalitions");
 										data = value.data(using: .utf8)!;
 										user.coalitions = try JSONDecoder().decode([Coalition].self, from: data);
+										let cursusUsers: [CursusUser?] = user.cursus_users!;
+										let cursusItem: Int = cursusUsers.count - 1;
+										let cursus: CursusUser = cursusUsers[cursusItem]!;
+										let idString: String = String(cursus.cursus.id);
+										let value = await Api.getValue("/v2/cursus/\(idString)/skills");
+										let data: Data = value.data(using: .utf8)!;
+										let skills: [SkillItem] = try JSONDecoder().decode([SkillItem].self, from: data);
+										skills.forEach({skill in
+											var found: Bool = false;
+											user.cursus_users![cursusItem]!.skills.forEach({sk in
+												if (sk.name == skill.name) {
+													found = true;
+												}
+											})
+											if (!found) {
+												user.cursus_users![cursusItem]!.skills.append(Skill(name: skill.name, level: 0.0))
+											}
+										})
 										search = false;
 									} else {
 										titleError = "User not found";

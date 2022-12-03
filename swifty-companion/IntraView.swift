@@ -34,7 +34,7 @@ struct IntraView: View {
 						if (user.projects_users != nil) {
 							ProjectView(user.projects_users!, cursusId);
 						}
-					}.navigationTitle("42 Profil")
+					}.navigationTitle("Profil")
 						.toolbar {
 							ToolbarItem(placement: .navigationBarLeading) {
 								Button("Back") {

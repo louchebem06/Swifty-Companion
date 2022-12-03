@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct GraphView: View {
-    let cursusUser: CursusUser?;
+	var cursusUser: CursusUser?;
 	let colorCoa: Color;
     
 	init(_ cursusUser: [CursusUser?], _ colorCoalition: Color = Color(UIColor.systemBlue)) {
@@ -17,12 +17,6 @@ struct GraphView: View {
             self.cursusUser = nil;
         } else {
             self.cursusUser = cursusUser[cursusUser.count - 1];
-			Task {
-				let cursus: CursusUser = cursusUser[cursusUser.count - 1]!;
-				let idString: String = String(cursus.cursus.id);
-				let _ = await Api.getValue("/v2/cursus/\(idString)/skills"); // value
-				// print(value);
-			}
         }
     }
 	
