@@ -14,8 +14,9 @@ struct ProjectsItem: Identifiable {
 	var name: String
 	var final_mark: Int?
 	var status: String
+	var validated: Bool?
 	var parent_id: Int?
-	var child: [ProjectsItem]? = nil;
+	var child: [ProjectsItem]? = nil
 }
 
 struct ProjectView: View {
@@ -36,12 +37,14 @@ struct ProjectView: View {
 			let occurrence = project!.occurrence;
 			let final_mark = project?.final_mark;
 			let status = project!.status;
+			let validated = project?.validated;
 			let item = ProjectsItem(
 				id42: id,
 				occurrence: occurrence,
 				name: name,
 				final_mark: final_mark,
-				status: status
+				status: status,
+				validated: validated
 			);
 			for cursus in project!.cursus_ids {
 				if (cursus == cursusId) {
@@ -60,12 +63,14 @@ struct ProjectView: View {
 			let final_mark = project?.final_mark;
 			let status = project!.status;
 			let parent_id = project?.project.parent_id!;
+			let validated = project?.validated;
 			let item = ProjectsItem(
 				id42: id,
 				occurrence: occurrence,
 				name: name,
 				final_mark: final_mark,
 				status: status,
+				validated: validated,
 				parent_id: parent_id
 			);
 			for cursus in project!.cursus_ids {
@@ -88,6 +93,7 @@ struct ProjectView: View {
 	func getItem(_ item: ProjectsItem) -> some View {
 		HStack {
 			Text("\(item.name)");
+			Text(String(item.validated ?? false));
 			Spacer();
 		}
 	}

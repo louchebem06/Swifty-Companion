@@ -57,6 +57,7 @@ struct ProjectsUser: Codable {
     let status: String
     let project: Project
 	let cursus_ids: [Int]
+	let validated: Bool?;
 }
 
 struct Coalition: Codable {

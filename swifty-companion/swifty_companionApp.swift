@@ -48,11 +48,13 @@ struct swifty_companionApp: App {
                 .onOpenURL { url in
                     let uri: String = url.host!;
                     if (uri == "auth") {
-                        let query: Dictionary<String, String> = parseQuery(url.query!);
-						if let code: String = try? query["code"] {
+						let querys: Dictionary<String, String> = parseQuery(url.query!);
+						if let code: String = try? querys["code"] {
 							Task {
-								let _ = await Api.codeToToken(code);
-								self.isLogin = true;
+								let token: Token = await Api.codeToToken(code);
+								if (token.access_token != nil) {
+									self.isLogin = true;
+								}
 							}
 						}
                     }

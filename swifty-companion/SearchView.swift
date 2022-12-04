@@ -37,6 +37,7 @@ struct SearchView: View {
 							tmpInput = tmpInput.lowercased();
 							tmpInput = tmpInput.replacingOccurrences(of: " ", with: "-", options: .literal, range: nil);
 							var value: String = await Api.getValue("/v2/users/\(tmpInput)");
+							value = value.replacingOccurrences(of: "validated?", with: "validated", options: .literal, range: nil);
 							if (value == "" || tmpInput.isEmpty) {
 								titleError = "Invalid login";
 								messageError = "'\(tmpInput)' is invalid";
@@ -103,11 +104,5 @@ struct SearchView: View {
         } else {
             IntraView(user);
         }
-    }
-}
-
-struct SearchView_Previews: PreviewProvider {
-    static var previews: some View {
-        SearchView()
     }
 }

@@ -82,7 +82,6 @@ class Api {
     }
 	
 	private static func refreshToken() async -> Void {
-		print(Api.token);
 		let url: URL = URL(string: "https://api.intra.42.fr/oauth/token")!;
 		let oauth: [String: String] = [
 			"grant_type": "refresh_token",
