@@ -9,18 +9,22 @@ import Foundation
 import CoreData
 
 class CoreData {
-	private let container: NSPersistentContainer = NSPersistentContainer(name: "swifty-companion");
+	static private let container: NSPersistentContainer = NSPersistentContainer(name: "swifty-companion");
+	static private var first: Bool = false;
 
 	init () {
-		container.loadPersistentStores { description, error in
-			if let error = error {
-				fatalError("Error: \(error.localizedDescription)")
+		if (!CoreData.first) {
+			CoreData.container.loadPersistentStores { description, error in
+				if let error = error {
+					fatalError("Error: \(error.localizedDescription)")
+				}
 			}
 		}
+		CoreData.first = true;
 	}
 	
 	private func getContext() -> NSManagedObjectContext {
-		return (container.viewContext);
+		return (CoreData.container.viewContext);
 	}
 	
 	func insert(_ token: Token) -> Void {
