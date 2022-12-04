@@ -82,7 +82,8 @@ struct IntraView: View {
 					SkillView(cursus)
 						.toolbar {
 							getToolBar();
-						};
+						}
+						.navigationTitle("Skills");
 				}.tabItem {
 					Label("Skills", systemImage: "list.dash")
 				}
@@ -90,8 +91,10 @@ struct IntraView: View {
 					ProjectView(user.projects_users!, cursus.cursus.id)
 						.toolbar {
 							getToolBar();
-						};
-				}.tabItem {
+						}
+						.navigationTitle("Projects");
+				}
+					.tabItem {
 					Label("Projects", systemImage: "square.and.pencil")
 				};
 			}.accentColor(colorCoa);

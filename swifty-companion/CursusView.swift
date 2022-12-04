@@ -48,6 +48,6 @@ struct CursusView: View {
 					};
 				};
 			Spacer();
-		}
+		}.padding(.bottom, 10);
 	}
 }

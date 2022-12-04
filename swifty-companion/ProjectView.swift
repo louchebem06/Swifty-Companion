@@ -90,7 +90,9 @@ struct ProjectView: View {
 							Text("In \(value.occurrence + 1) try")
 						}
 					}
-					Text("\(String(value.final_mark!))/100");
+					if (value.final_mark != nil) {
+						Text("\(String(value.final_mark!))/100");
+					}
 				} else {
 					Text(value.status.replacingOccurrences(of: "_", with: " ").capitalized);
 				}
