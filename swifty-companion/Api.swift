@@ -48,7 +48,8 @@ class Api {
 				return ("");
 			}
 		}
-		return ("Token is not valid");
+		await refreshToken();
+		return (await getValue(apiUrl));
     }
     
 	public static func codeToToken(_ code: String) async -> Token {
@@ -59,7 +60,7 @@ class Api {
             "client_secret": Api.secret,
             "code": code,
             "redirect_uri": Api.redirect_uri
-        ]
+		];
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: oauth)
             var request = URLRequest(url: url);
@@ -79,4 +80,33 @@ class Api {
             fatalError("Error request Token");
         }
     }
+	
+	private static func refreshToken() async -> Void {
+		print(Api.token);
+		let url: URL = URL(string: "https://api.intra.42.fr/oauth/token")!;
+		let oauth: [String: String] = [
+			"grant_type": "refresh_token",
+			"client_id": Api.uid,
+			"client_secret": Api.secret,
+			"refresh_token": Api.token.refresh_token!,
+			"redirect_uri": Api.redirect_uri
+		];
+		do {
+			let jsonData = try JSONSerialization.data(withJSONObject: oauth)
+			var request = URLRequest(url: url);
+			request.httpMethod = "POST";
+			request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+			request.addValue("application/json", forHTTPHeaderField: "Accept")
+			request.httpBody = jsonData;
+			let (data, _) = try await URLSession.shared.data(for: request);
+			let values: String = String(data: data, encoding: .utf8)!;
+			let jsonToken = values.data(using: .utf8)!;
+			let newToken: Token = try JSONDecoder().decode(Token.self, from: jsonToken);
+			Api.token = newToken;
+			let db = CoreData();
+			db.insert(Api.token);
+		} catch {
+			fatalError("Error request Token");
+		}
+	}
 }
