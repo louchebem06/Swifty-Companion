@@ -78,28 +78,26 @@ struct ProjectView: View {
 	}
 
     var body: some View {
-		NavigationView {
-			List (values) { value in
-				HStack {
-					Text("\(value.name)");
-					if (value.status == "finished") {
-						Text((value.validated ?? false) ? "✅" : "❌");
-						if (value.validated ?? false) {
-							if (value.occurrence == 0) {
-								Text("First try");
-							} else {
-								Text("In \(value.occurrence + 1) try")
-							}
+		List (values) { value in
+			HStack {
+				Text("\(value.name)");
+				if (value.status == "finished") {
+					Text((value.validated ?? false) ? "✅" : "❌");
+					if (value.validated ?? false) {
+						if (value.occurrence == 0) {
+							Text("First try");
+						} else {
+							Text("In \(value.occurrence + 1) try")
 						}
-						Text("\(String(value.final_mark!))/100");
-					} else {
-						Text(value.status.replacingOccurrences(of: "_", with: " ").capitalized);
 					}
-					if (value.child != nil) {
-						Text("Subproject: \(String(value.child!.count))")
-					}
+					Text("\(String(value.final_mark!))/100");
+				} else {
+					Text(value.status.replacingOccurrences(of: "_", with: " ").capitalized);
 				}
-			}.navigationTitle("Projects");
+				if (value.child != nil) {
+					Text("Subproject: \(String(value.child!.count))")
+				}
+			}
 		}
 	}
 }

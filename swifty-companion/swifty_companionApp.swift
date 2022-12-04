@@ -49,7 +49,7 @@ struct swifty_companionApp: App {
                     let uri: String = url.host!;
                     if (uri == "auth") {
 						let querys: Dictionary<String, String> = parseQuery(url.query!);
-						if let code: String = try? querys["code"] {// remove warn
+						if let code: String = try? querys["code"] {
 							Task {
 								let token: Token = await Api.codeToToken(code);
 								if (token.access_token != nil) {
