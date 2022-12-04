@@ -8,22 +8,18 @@
 import SwiftUI
 
 struct GraphView: View {
-	var cursusUser: CursusUser?;
+	let cursusUser: CursusUser;
 	let colorCoa: Color;
     
-	init(_ cursusUser: [CursusUser?], _ colorCoalition: Color = Color(UIColor.systemBlue)) {
-		colorCoa = colorCoalition;
-		if (cursusUser.count == 0) {
-            self.cursusUser = nil;
-        } else {
-            self.cursusUser = cursusUser[cursusUser.count - 1];
-        }
+	init(_ cursusUser: CursusUser, _ colorCoalition: Color = Color(UIColor.systemBlue)) {
+		self.colorCoa = colorCoalition;
+		self.cursusUser = cursusUser;
     }
 	
     var body: some View {
 		VStack {
 			HStack {
-				Text("\(cursusUser?.cursus.name ?? "Undefined") - \(cursusUser?.grade ?? "Undefined")")
+				Text("\(cursusUser.cursus.name) - \(cursusUser.grade ?? "Undefined")")
 					.font(.system(size:12))
 					.fontWeight(.bold)
 					.foregroundColor(colorCoa);
@@ -31,7 +27,7 @@ struct GraphView: View {
 			
 			VStack {
 				GeometryReader { geometry in
-					let level: Double = cursusUser?.level ?? 0.0;
+					let level: Double = cursusUser.level;
 					let lvl: Int = Int(level)
 					let percent: Double = level - Double(lvl);
 					ZStack{
@@ -55,10 +51,10 @@ struct GraphView: View {
 			}.padding(.bottom, 40);
 			
             VStack {
-                let nbOfElement: Int = cursusUser?.skills.count ?? 0;
+                let nbOfElement: Int = cursusUser.skills.count;
                 ForEach(0..<nbOfElement, id: \.self) { i in
-					let name: String = cursusUser!.skills[i].name;
-                    let lvl: Double = cursusUser!.skills[i].level;
+					let name: String = cursusUser.skills[i].name;
+                    let lvl: Double = cursusUser.skills[i].level;
                     let percent: Double = lvl * 100 / 20 / 100;
                     ProgressView(value: percent) {
                         Text(name);

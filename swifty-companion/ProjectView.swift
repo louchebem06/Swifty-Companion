@@ -18,16 +18,11 @@ struct ProjectsItem: Identifiable {
 	var parent_id: Int?
 	var child: [ProjectsItem]? = nil
 }
-
 struct ProjectView: View {
-	let cursusId: Int;
-	let projects: [ProjectsUser?];
 	
 	var values: [ProjectsItem] = [];
 	
 	init(_ projects: [ProjectsUser?], _ cursusId: Int) {
-		self.cursusId = cursusId;
-		self.projects = projects;
 		for project in projects {
 			if (project?.project.parent_id != nil) {
 				continue ;
@@ -46,8 +41,8 @@ struct ProjectView: View {
 				status: status,
 				validated: validated
 			);
-			for cursus in project!.cursus_ids {
-				if (cursus == cursusId) {
+			for id in project!.cursus_ids {
+				if (id == cursusId) {
 					values.append(item);
 					break ;
 				}
@@ -73,8 +68,8 @@ struct ProjectView: View {
 				validated: validated,
 				parent_id: parent_id
 			);
-			for cursus in project!.cursus_ids {
-				if (cursus == cursusId) {
+			for id in project!.cursus_ids {
+				if (id == cursusId) {
 					for i in 0..<values.count {
 						if (values[i].id42 == item.parent_id) {
 							if (values[i].child == nil) {
@@ -90,16 +85,50 @@ struct ProjectView: View {
 		}
 	}
 	
-	func getItem(_ item: ProjectsItem) -> some View {
+	func getChild(_ item: ProjectsItem) -> some View {
 		HStack {
-			Text("\(item.name)");
-			Text(String(item.validated ?? false));
+			Text("\t - \(item.name)");
+			if (item.status == "finished") {
+				Text((item.validated ?? false) ? "✅" : "❌");
+				Text("\(String(item.final_mark!))/100");
+			} else {
+				Text(item.status);
+			}
 			Spacer();
+		}
+	}
+	
+	func getItem(_ item: ProjectsItem) -> some View {
+		VStack {
+			HStack {
+				Text("\(item.name)");
+				if (item.status == "finished") {
+					Text((item.validated ?? false) ? "✅" : "❌");
+					if (item.validated ?? false) {
+						if (item.occurrence == 0) {
+							Text("First try");
+						} else {
+							Text("In \(item.occurrence + 1) try")
+						}
+						Text("\(String(item.final_mark!))/100");
+					}
+				} else {
+					Text(item.status.replacingOccurrences(of: "_", with: " ").capitalized);
+				}
+				Spacer();
+			}
+			if (item.child != nil) {
+				VStack(alignment: .leading) {
+					ForEach(item.child!) {currentChild in
+						getChild(currentChild);
+					}
+				}
+			}
 		}
 	}
 
     var body: some View {
-		if (projects.isEmpty) {
+		if (values.isEmpty) {
 			Text("Project not found")
 		} else {
 			VStack(alignment: .leading, spacing: 20) {
