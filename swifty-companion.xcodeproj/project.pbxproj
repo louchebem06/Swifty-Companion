@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		C162F87429390C0F003DEED9 /* GraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C162F87329390C0F003DEED9 /* GraphView.swift */; };
+		C1BD6DD3293C624800011908 /* swifty-companion.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C1BD6DD1293C624800011908 /* swifty-companion.xcdatamodeld */; };
+		C1BD6DD7293C6E5C00011908 /* CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BD6DD6293C6E5C00011908 /* CoreData.swift */; };
 		C1C12863293B866C0010F796 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = C1C12862293B866C0010F796 /* SDWebImageSwiftUI */; };
 		C1C12866293B87AB0010F796 /* SDWebImageSVGCoder in Frameworks */ = {isa = PBXBuildFile; productRef = C1C12865293B87AB0010F796 /* SDWebImageSVGCoder */; };
 		C1D75998293762C400D96155 /* utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D75997293762C400D96155 /* utils.swift */; };
@@ -26,6 +28,8 @@
 
 /* Begin PBXFileReference section */
 		C162F87329390C0F003DEED9 /* GraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphView.swift; sourceTree = "<group>"; };
+		C1BD6DD2293C624800011908 /* swifty-companion.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "swifty-companion.xcdatamodel"; sourceTree = "<group>"; };
+		C1BD6DD6293C6E5C00011908 /* CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreData.swift; sourceTree = "<group>"; };
 		C1D75997293762C400D96155 /* utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = utils.swift; sourceTree = "<group>"; };
 		C1D7599B2937666300D96155 /* ProfilView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilView.swift; sourceTree = "<group>"; };
 		C1D7599D2937685E00D96155 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -88,6 +92,8 @@
 				C162F87329390C0F003DEED9 /* GraphView.swift */,
 				C1DD6CC5293A43B000F63065 /* IntraView.swift */,
 				C1DD6CC7293A714000F63065 /* ProjectView.swift */,
+				C1BD6DD1293C624800011908 /* swifty-companion.xcdatamodeld */,
+				C1BD6DD6293C6E5C00011908 /* CoreData.swift */,
 			);
 			path = "swifty-companion";
 			sourceTree = "<group>";
@@ -178,6 +184,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C1BD6DD3293C624800011908 /* swifty-companion.xcdatamodeld in Sources */,
+				C1BD6DD7293C6E5C00011908 /* CoreData.swift in Sources */,
 				C1D75998293762C400D96155 /* utils.swift in Sources */,
 				C1DD6CC8293A714000F63065 /* ProjectView.swift in Sources */,
 				C1D7599C2937666300D96155 /* ProfilView.swift in Sources */,
@@ -333,9 +341,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.school42.swifty-companion";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -363,9 +374,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.school42.swifty-companion";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -423,6 +437,19 @@
 			productName = SDWebImageSVGCoder;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		C1BD6DD1293C624800011908 /* swifty-companion.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				C1BD6DD2293C624800011908 /* swifty-companion.xcdatamodel */,
+			);
+			currentVersion = C1BD6DD2293C624800011908 /* swifty-companion.xcdatamodel */;
+			path = "swifty-companion.xcdatamodeld";
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = C1D986C029354076002E1ACE /* Project object */;
 }

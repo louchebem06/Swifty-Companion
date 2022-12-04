@@ -41,7 +41,11 @@ struct SearchView: View {
 								titleError = "Invalid login";
 								messageError = "'\(tmpInput)' is invalid";
 								showAlert = true;
-							} else {
+							} else if (value == "Token is not valid") {
+								titleError = value;
+								messageError = "Token as expired";
+								showAlert = true;
+							}else {
 								do {
 									var data: Data = value.data(using: .utf8)!;
 									user = try JSONDecoder().decode(User.self, from: data);

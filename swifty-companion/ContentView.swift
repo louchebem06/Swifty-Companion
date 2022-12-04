@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @Environment(\.openURL) private var openURL;
     let authUrl: URL;
-    let isLogin: Bool;
+	let isLogin: Bool;
     
     init(_ authUrl: URL, _ isLogin: Bool) {
         self.authUrl = authUrl;

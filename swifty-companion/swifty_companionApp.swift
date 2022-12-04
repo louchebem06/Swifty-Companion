@@ -19,9 +19,10 @@ struct swifty_companionApp: App {
     private let UID_42: String = ProcessInfo.processInfo.environment["UID_42"]!;
     private let SECRET_42: String = ProcessInfo.processInfo.environment["SECRET_42"]!;
     private var authUrl: URL;
-    @State private var isLogin: Bool = false;
+    @State private var isLogin: Bool;
 
     init () {
+		_isLogin = State(initialValue: false);
         Api.setSecret(SECRET_42);
         Api.setUID(UID_42);
         
@@ -32,7 +33,13 @@ struct swifty_companionApp: App {
             URLQueryItem(name: "redirect_uri", value: Api.redirect_uri),
             URLQueryItem(name: "response_type", value: "code")
         ]);
-		setUpDependencies()
+		setUpDependencies();
+		let db = CoreData();
+		let tokens: [Token] = db.readAll();
+		if (tokens.count > 0) {
+			Api.setToken(tokens[tokens.count - 1]);
+			_isLogin = State(initialValue: true)
+		}
     }
     
     var body: some Scene {
@@ -44,13 +51,11 @@ struct swifty_companionApp: App {
                         let query: Dictionary<String, String> = parseQuery(url.query!);
                         let code: String = query["code"]!;
                         Task {
-                            do {
-                                _ = await Api.codeToToken(code);
-                                isLogin = true;
-                            }
+							let _ = await Api.codeToToken(code);
+							self.isLogin = true;
                         }
                     }
                 }
-        }
+		};
     }
 }

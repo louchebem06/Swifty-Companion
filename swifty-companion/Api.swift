@@ -21,30 +21,37 @@ class Api {
     public static func setSecret(_ secret: String) -> Void { Api.secret = secret; }
     public static func setUID(_ uid: String) -> Void { Api.uid = uid; }
     public static func setToken(_ token: Token) -> Void { Api.token = token; }
+	
+	static private func tokenIsValid() -> Bool {
+		return !((Double(Api.token.created_at! + Api.token.expires_in!) - NSDate().timeIntervalSince1970) < 10)
+	}
 
     public static func getValue(_ apiUrl: String) async -> String {
-		do {
-			if (nbOfRequest == limitRate) {
-				sleep(1);
-				nbOfRequest = 0;
-			}
-			nbOfRequest += 1;
-			let url: URL? = URL(string: "\(Api.baseUrl)\(apiUrl)");
-			if (url == nil) {
+		if (tokenIsValid()) {
+			do {
+				if (nbOfRequest == limitRate) {
+					sleep(1);
+					nbOfRequest = 0;
+				}
+				nbOfRequest += 1;
+				let url: URL? = URL(string: "\(Api.baseUrl)\(apiUrl)");
+				if (url == nil) {
+					return ("");
+				}
+				var request = URLRequest(url: url!);
+				request.httpMethod = "GET";
+				request.setValue("\(Api.token.token_type!) \(Api.token.access_token!)", forHTTPHeaderField: "Authorization");
+				let (data, _) = try await URLSession.shared.data(for: request);
+				let jsonString = String(data: data, encoding: .utf8)!;
+				return (jsonString);
+			} catch {
 				return ("");
 			}
-			var request = URLRequest(url: url!);
-			request.httpMethod = "GET";
-			request.setValue("\(Api.token.token_type!) \(Api.token.access_token!)", forHTTPHeaderField: "Authorization");
-			let (data, _) = try await URLSession.shared.data(for: request);
-			let jsonString = String(data: data, encoding: .utf8)!;
-			return (jsonString);
-		} catch {
-			return ("");
 		}
+		return ("Token is not valid");
     }
     
-    public static func codeToToken(_ code: String) async -> Token {
+	public static func codeToToken(_ code: String) async -> Token {
         let url: URL = URL(string: "https://api.intra.42.fr/oauth/token")!;
         let oauth: [String: String] = [
             "grant_type": Api.grant_type,
@@ -65,6 +72,8 @@ class Api {
             let jsonToken = values.data(using: .utf8)!;
             let newToken: Token = try JSONDecoder().decode(Token.self, from: jsonToken);
             Api.token = newToken;
+			let db = CoreData();
+			db.insert(Api.token);
             return (newToken);
         } catch {
             fatalError("Error request Token");
