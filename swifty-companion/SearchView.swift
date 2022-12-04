@@ -15,65 +15,64 @@ struct SearchView: View {
     @State private var titleError: String = "";
     @State private var messageError: String = "";
     @State private var isRequestInProgress: Bool = false;
-	@State private var disabledButton: Bool = false;
+	@State private var disabledSearchBar: Bool = false;
 	
 	func runSeach() {
+		disabledSearchBar = true;
 		Task() {
 			isRequestInProgress = true;
 			tmpInput = tmpInput.lowercased();
 			tmpInput = tmpInput.replacingOccurrences(of: " ", with: "-", options: .literal, range: nil);
 			var value: String = await Api.getValue("/v2/users/\(tmpInput)");
 			value = value.replacingOccurrences(of: "validated?", with: "validated", options: .literal, range: nil);
-			if (value == "" || tmpInput.isEmpty) {
-				titleError = "Invalid login";
-				messageError = "'\(tmpInput)' is invalid";
-				showAlert = true;
-			} else if (value == "Token is not valid") {
-				titleError = value;
-				messageError = "Token as expired";
-				showAlert = true;
-			} else {
-				do {
-					var data: Data = value.data(using: .utf8)!;
-					user = try JSONDecoder().decode(User.self, from: data);
-					if (user.id != nil) {
-						let idUserString: String = String(user.id!);
-						value = await Api.getValue("/v2/users/\(idUserString)/coalitions");
-						data = value.data(using: .utf8)!;
-						user.coalitions = try JSONDecoder().decode([Coalition].self, from: data);
-						for n in 0..<user.cursus_users!.count {
-							let cursusUsers: CursusUser = user.cursus_users![n]!;
-							let idString: String = String(cursusUsers.cursus.id);
-							let value = await Api.getValue("/v2/cursus/\(idString)/skills");
-							let data: Data = value.data(using: .utf8)!;
-							let skills: [SkillItem] = try JSONDecoder().decode([SkillItem].self, from: data);
-							skills.forEach({skill in
-								var found: Bool = false;
-								user.cursus_users![n]!.skills.forEach({sk in
-									if (sk.name == skill.name) {
-										found = true;
-									}
-								})
-								if (!found) {
-									user.cursus_users![n]!.skills.append(Skill(name: skill.name, level: 0.0))
+			do {
+				var data: Data = value.data(using: .utf8)!;
+				user = try JSONDecoder().decode(User.self, from: data);
+				if (user.id != nil) {
+					let idUserString: String = String(user.id!);
+					value = await Api.getValue("/v2/users/\(idUserString)/coalitions");
+					data = value.data(using: .utf8)!;
+					user.coalitions = try JSONDecoder().decode([Coalition].self, from: data);
+					for n in 0..<user.cursus_users!.count {
+						let cursusUsers: CursusUser = user.cursus_users![n]!;
+						let idString: String = String(cursusUsers.cursus.id);
+						let value = await Api.getValue("/v2/cursus/\(idString)/skills");
+						let data: Data = value.data(using: .utf8)!;
+						let skills: [SkillItem] = try JSONDecoder().decode([SkillItem].self, from: data);
+						skills.forEach({skill in
+							var found: Bool = false;
+							user.cursus_users![n]!.skills.forEach({sk in
+								if (sk.name == skill.name) {
+									found = true;
 								}
 							})
-						}
-						search = false;
-					} else {
-						titleError = "User not found";
-						messageError = "\(tmpInput) is not valid user 42";
-						showAlert = true;
+							if (!found) {
+								user.cursus_users![n]!.skills.append(Skill(name: skill.name, level: 0.0))
+							}
+						})
 					}
-				} catch {
-					titleError = "Request error";
-					messageError = "Error: \(error)";
-					showAlert = true;
+					search = false;
+				} else {
+					errorUserNotFound();
 				}
+			} catch {
+				errorRequest(error);
 			}
 			isRequestInProgress = false;
-			disabledButton = false;
+			disabledSearchBar = false;
 		}
+	}
+	
+	func errorUserNotFound() -> Void {
+		titleError = "User not found";
+		messageError = "\(tmpInput) is not valid user 42";
+		showAlert = true;
+	}
+	
+	func errorRequest(_ error: any Error) -> Void {
+		titleError = "Request error";
+		messageError = "Error: \(error)";
+		showAlert = true;
 	}
 	
 	func runAlert() -> Alert {
@@ -89,13 +88,15 @@ struct SearchView: View {
 				Image("logo42Nice")
 					.resizable()
 					.scaledToFit()
-					.frame(width: 100, height: 100);
+					.frame(width: 100, height: 100)
+						.navigationTitle("Search user 42");
 				if isRequestInProgress {
 					ProgressView();
 				}
 			}.searchable(text: $tmpInput)
 				.onSubmit(of: .search, runSeach)
-				.alert(isPresented: $showAlert) { runAlert() };
+				.alert(isPresented: $showAlert) { runAlert() }
+				.disabled(disabledSearchBar);
         } else {
             IntraView(user);
         }
