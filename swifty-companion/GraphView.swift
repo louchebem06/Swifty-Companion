@@ -7,13 +7,26 @@
 
 import SwiftUI
 
+struct SkillItems: Identifiable {
+	var id = UUID()
+	var name: String
+	var lvl: Double
+}
+
 struct GraphView: View {
 	let cursusUser: CursusUser;
 	let colorCoa: Color;
+	var skills: [SkillItems] = [];
     
-	init(_ cursusUser: CursusUser, _ colorCoalition: Color = Color(UIColor.systemBlue)) {
-		self.colorCoa = colorCoalition;
+	init(_ cursusUser: CursusUser, _ colorCoalition: Color) {
 		self.cursusUser = cursusUser;
+		self.colorCoa = colorCoalition;
+		for skill in cursusUser.skills {
+			skills.append(SkillItems(
+				name: skill.name,
+				lvl: skill.level
+			));
+		}
     }
 	
     var body: some View {
@@ -51,18 +64,14 @@ struct GraphView: View {
 			}.padding(.bottom, 40);
 			
             VStack {
-                let nbOfElement: Int = cursusUser.skills.count;
-                ForEach(0..<nbOfElement, id: \.self) { i in
-					let name: String = cursusUser.skills[i].name;
-                    let lvl: Double = cursusUser.skills[i].level;
-                    let percent: Double = lvl * 100 / 20 / 100;
-                    ProgressView(value: percent) {
-                        Text(name);
-                    };
-                }
-                if (nbOfElement == 0) {
-                    Text("Skill undefined");
-                }
+				NavigationView {
+					List(skills) {skill in
+						let percent: Double = skill.lvl * 100 / 20 / 100;
+						ProgressView(value: percent) {
+							Text(skill.name);
+						}
+					}.navigationTitle("Skills");
+				}
 			};
 		}.padding(10)
     }

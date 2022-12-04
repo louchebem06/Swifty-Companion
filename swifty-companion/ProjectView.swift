@@ -18,6 +18,7 @@ struct ProjectsItem: Identifiable {
 	var parent_id: Int?
 	var child: [ProjectsItem]? = nil
 }
+
 struct ProjectView: View {
 	
 	var values: [ProjectsItem] = [];
@@ -77,32 +78,28 @@ struct ProjectView: View {
 	}
 
     var body: some View {
-		if (values.isEmpty) {
-			Text("Project not found")
-		} else {
-			NavigationView {
-				List (values) { value in
-					HStack {
-						Text("\(value.name)");
-						if (value.status == "finished") {
-							Text((value.validated ?? false) ? "✅" : "❌");
-							if (value.validated ?? false) {
-								if (value.occurrence == 0) {
-									Text("First try");
-								} else {
-									Text("In \(value.occurrence + 1) try")
-								}
+		NavigationView {
+			List (values) { value in
+				HStack {
+					Text("\(value.name)");
+					if (value.status == "finished") {
+						Text((value.validated ?? false) ? "✅" : "❌");
+						if (value.validated ?? false) {
+							if (value.occurrence == 0) {
+								Text("First try");
+							} else {
+								Text("In \(value.occurrence + 1) try")
 							}
-							Text("\(String(value.final_mark!))/100");
-						} else {
-							Text(value.status.replacingOccurrences(of: "_", with: " ").capitalized);
 						}
-						if (value.child != nil) {
-							Text("Subproject: \(String(value.child!.count))")
-						}
+						Text("\(String(value.final_mark!))/100");
+					} else {
+						Text(value.status.replacingOccurrences(of: "_", with: " ").capitalized);
 					}
-				}.navigationTitle("Projects");
-			}
+					if (value.child != nil) {
+						Text("Subproject: \(String(value.child!.count))")
+					}
+				}
+			}.navigationTitle("Projects");
 		}
 	}
 }
