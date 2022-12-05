@@ -66,6 +66,13 @@ struct Coalition: Codable {
 	let image_url: URL
 	let color: String
 	let score: Int
+	let cover_url: URL
+}
+
+struct Location: Codable {
+	let begin_at: String
+	let end_at: String?
+	let host: String
 }
 
 struct User: Codable {
@@ -82,4 +89,5 @@ struct User: Codable {
     var cursus_users: [CursusUser?]?
     var projects_users: [ProjectsUser?]?
 	var coalitions: [Coalition?]?
+	var locations: [Location]?
 }

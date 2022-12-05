@@ -11,6 +11,7 @@
 		C14A68DC293D4C49007918D7 /* SkillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A68DB293D4C49007918D7 /* SkillView.swift */; };
 		C1BD6DD3293C624800011908 /* swifty-companion.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C1BD6DD1293C624800011908 /* swifty-companion.xcdatamodeld */; };
 		C1BD6DD7293C6E5C00011908 /* CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BD6DD6293C6E5C00011908 /* CoreData.swift */; };
+		C1BDB2FD293E762400D8C220 /* LogtimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BDB2FC293E762400D8C220 /* LogtimeView.swift */; };
 		C1C12863293B866C0010F796 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = C1C12862293B866C0010F796 /* SDWebImageSwiftUI */; };
 		C1C12866293B87AB0010F796 /* SDWebImageSVGCoder in Frameworks */ = {isa = PBXBuildFile; productRef = C1C12865293B87AB0010F796 /* SDWebImageSVGCoder */; };
 		C1D75998293762C400D96155 /* utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D75997293762C400D96155 /* utils.swift */; };
@@ -32,6 +33,7 @@
 		C14A68DB293D4C49007918D7 /* SkillView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillView.swift; sourceTree = "<group>"; };
 		C1BD6DD2293C624800011908 /* swifty-companion.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "swifty-companion.xcdatamodel"; sourceTree = "<group>"; };
 		C1BD6DD6293C6E5C00011908 /* CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreData.swift; sourceTree = "<group>"; };
+		C1BDB2FC293E762400D8C220 /* LogtimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogtimeView.swift; sourceTree = "<group>"; };
 		C1D75997293762C400D96155 /* utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = utils.swift; sourceTree = "<group>"; };
 		C1D7599B2937666300D96155 /* ProfilView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilView.swift; sourceTree = "<group>"; };
 		C1D7599D2937685E00D96155 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 				C1BD6DD6293C6E5C00011908 /* CoreData.swift */,
 				C14A68D9293D4C33007918D7 /* CursusView.swift */,
 				C14A68DB293D4C49007918D7 /* SkillView.swift */,
+				C1BDB2FC293E762400D8C220 /* LogtimeView.swift */,
 			);
 			path = "swifty-companion";
 			sourceTree = "<group>";
@@ -188,6 +191,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C1BD6DD3293C624800011908 /* swifty-companion.xcdatamodeld in Sources */,
+				C1BDB2FD293E762400D8C220 /* LogtimeView.swift in Sources */,
 				C1BD6DD7293C6E5C00011908 /* CoreData.swift in Sources */,
 				C1D75998293762C400D96155 /* utils.swift in Sources */,
 				C1DD6CC8293A714000F63065 /* ProjectView.swift in Sources */,

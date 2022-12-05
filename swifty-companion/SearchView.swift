@@ -16,42 +16,72 @@ struct SearchView: View {
     @State private var messageError: String = "";
     @State private var isRequestInProgress: Bool = false;
 	@State private var disabledSearchBar: Bool = false;
+	@State private var msgLoading: String = "";
 	
 	func runSeach() {
 		disabledSearchBar = true;
+		msgLoading = "Initialisation request";
 		Task() {
 			isRequestInProgress = true;
 			tmpInput = tmpInput.lowercased();
 			tmpInput = tmpInput.replacingOccurrences(of: " ", with: "-", options: .literal, range: nil);
+			msgLoading = "Search user";
 			var value: String = await Api.getValue("/v2/users/\(tmpInput)");
 			value = value.replacingOccurrences(of: "validated?", with: "validated", options: .literal, range: nil);
 			do {
 				var data: Data = value.data(using: .utf8)!;
 				user = try JSONDecoder().decode(User.self, from: data);
 				if (user.id != nil) {
-					let idUserString: String = String(user.id!);
-					value = await Api.getValue("/v2/users/\(idUserString)/coalitions");
+					msgLoading = "Information coalitions";
+					value = await Api.getValue("/v2/users/\(String(user.id!))/coalitions?coalition[cover]");
 					data = value.data(using: .utf8)!;
 					user.coalitions = try JSONDecoder().decode([Coalition].self, from: data);
-					for n in 0..<user.cursus_users!.count {
-						let cursusUsers: CursusUser = user.cursus_users![n]!;
-						let idString: String = String(cursusUsers.cursus.id);
-						let value = await Api.getValue("/v2/cursus/\(idString)/skills");
-						let data: Data = value.data(using: .utf8)!;
-						let skills: [SkillItem] = try JSONDecoder().decode([SkillItem].self, from: data);
-						skills.forEach({skill in
-							var found: Bool = false;
-							user.cursus_users![n]!.skills.forEach({sk in
-								if (sk.name == skill.name) {
-									found = true;
+					if (user.coalitions == nil || user.coalitions!.isEmpty) {
+						errorNotCoalition();
+					} else {
+						for n in 0..<user.cursus_users!.count {
+							let cursusUsers: CursusUser = user.cursus_users![n]!;
+							let idString: String = String(cursusUsers.cursus.id);
+							msgLoading = "Get values skill cursus";
+							let value = await Api.getValue("/v2/cursus/\(idString)/skills");
+							let data: Data = value.data(using: .utf8)!;
+							let skills: [SkillItem] = try JSONDecoder().decode([SkillItem].self, from: data);
+							skills.forEach({skill in
+								var found: Bool = false;
+								user.cursus_users![n]!.skills.forEach({sk in
+									if (sk.name == skill.name) {
+										found = true;
+									}
+								})
+								if (!found) {
+									user.cursus_users![n]!.skills.append(Skill(name: skill.name, level: 0.0))
 								}
 							})
-							if (!found) {
-								user.cursus_users![n]!.skills.append(Skill(name: skill.name, level: 0.0))
+						}
+						msgLoading = "Get locations";
+						var page: Int = 1;
+						var locations: [Location] = [];
+						while (true) {
+							value = await Api.getValue("/v2/users/\(String(user.id!))/locations?per_page=100&page=\(page)");
+							data = value.data(using: .utf8)!;
+							let temp: [Location] = try JSONDecoder().decode([Location].self, from: data)
+							if (temp.isEmpty) {
+								break ;
 							}
-						})
+							for tmp in temp {
+								locations.append(tmp);
+							}
+							if (temp.count < 100) {
+								break ;
+							}
+							page += 1;
+							msgLoading = "Locations found: \(locations.count)";
+						}
+						user.locations = locations;
+						// print(await Api.getValue("/v2/achievements_users?filter[user_id]=\(String(user.id!))"));
+						// print(await Api.getValue("/v2/achievements"))
+						search = false;
 					}
-					search = false;
 				} else {
 					errorUserNotFound();
 				}
@@ -60,7 +90,14 @@ struct SearchView: View {
 			}
 			isRequestInProgress = false;
 			disabledSearchBar = false;
+			msgLoading = "";
 		}
+	}
+	
+	func errorNotCoalition() -> Void {
+		titleError = "Error user";
+		messageError = "This user as not coalition! realy ?";
+		showAlert = true;
 	}
 	
 	func errorUserNotFound() -> Void {
@@ -91,7 +128,7 @@ struct SearchView: View {
 					.frame(width: 100, height: 100)
 						.navigationTitle("Search user 42");
 				if isRequestInProgress {
-					ProgressView();
+					ProgressView(msgLoading);
 				}
 			}.searchable(text: $tmpInput)
 				.onSubmit(of: .search, runSeach)

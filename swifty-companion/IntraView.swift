@@ -71,10 +71,12 @@ struct IntraView: View {
 		} else if (refresh) {
 			TabView {
 				NavigationView {
-					ProfilView(user)
-						.toolbar {
-							getToolBar();
-						};
+					ScrollView {
+						ProfilView(user);
+						LogtimeView(user.locations);
+					}.toolbar {
+						getToolBar();
+					};
 				}.tabItem {
 					Label("Profil", systemImage: "person")
 				};

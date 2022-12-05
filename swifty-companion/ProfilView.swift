@@ -14,17 +14,11 @@ struct ProfilView: View {
     let user: User;
 	let coalition: Coalition;
 	let colorCoa: Color;
-	let backgroundCoa: URL;
     
     init(_ user: User) {
         self.user = user;
 		self.coalition = user.coalitions![0]!;
 		self.colorCoa = hexStringToColor(self.coalition.color);
-
-		// This not functional other 42 only 42Nice
-		// API get background img in not found
-		// other image
-		backgroundCoa = URL(string: "https://cdn.intra.42.fr/coalition/cover/\(self.coalition.id)/bg_classic_\(self.coalition.name.lowercased()).jpg") ?? URL(string: "https://42.fr/wp-content/uploads/2021/06/29.png")!;
     }
 
 	var body: some View {
@@ -156,7 +150,7 @@ struct ProfilView: View {
 				Spacer()
 			}.background(
 				AsyncImage(
-					url: backgroundCoa,
+					url: coalition.cover_url,
 					content: { image in
 						image.resizable()
 							.scaledToFill()

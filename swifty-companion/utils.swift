@@ -39,3 +39,17 @@ func hexStringToColor (_ hex:String) -> Color {
 		alpha: CGFloat(1.0))
 	)
 }
+
+func stringIsoToDate(_ dateString: String?) -> Date {
+	if (dateString == nil) {
+		return (Date());
+	}
+	let formatter = ISO8601DateFormatter()
+	formatter.formatOptions.insert(.withFractionalSeconds)
+	let date: Date = formatter.date(from: dateString!)!;
+	return (date);
+}
+
+func dateComposantToDate(_ date: DateComponents) -> Date {
+	return (Calendar.current.date(from: date)!);
+}
