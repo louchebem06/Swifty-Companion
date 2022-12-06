@@ -76,7 +76,7 @@ struct IntraView: View {
 						LogtimeView(user.locations);
 					}.toolbar {
 						getToolBar();
-					};
+					}.navigationTitle("Profil");
 				}.tabItem {
 					Label("Profil", systemImage: "person")
 				};
