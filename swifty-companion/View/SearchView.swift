@@ -31,6 +31,26 @@ struct SearchView: View {
 		return (try JSONDecoder().decode([T].self, from: data));
 	}
 	
+	func getInMultiPage<T: Codable>(url: String, msg: String) async throws -> [T] {
+		var values: [T] = [];
+		var page: Int = 1;
+		while (true) {
+			msgLoading = "\(msg) in page \(page)";
+			let tmp: [T] = try await getValues("\(url)per_page=100&page=\(page)")
+			if (tmp.isEmpty) {
+				break ;
+			}
+			for t in tmp {
+				values.append(t);
+			}
+			if (tmp.count < 100) {
+				break ;
+			}
+			page += 1;
+		}
+		return (values);
+	}
+	
 	func runSeach() {
 		disabledSearchBar = true;
 		msgLoading = "Initialisation request";
@@ -61,60 +81,27 @@ struct SearchView: View {
 							})
 						}
 
-						var page: Int = 1;
-						var locations: [Location] = [];
-						while (true) {
-							msgLoading = "Locations \(user.login!) in page \(page)";
-							let temp: [Location] = try await getValues("/v2/users/\(String(user.id!))/locations?per_page=100&page=\(page)");
-							if (temp.isEmpty) {
-								break ;
-							}
-							for tmp in temp {
-								locations.append(tmp);
-							}
-							if (temp.count < 100) {
-								break ;
-							}
-							page += 1;
-						}
-						user.locations = locations;
+						user.locations = try await getInMultiPage(
+							url: "/v2/users/\(String(user.id!))/locations?",
+							msg: "Get locations \(user.login!)"
+						);
 						
 						var achievements: [Achievement] = [];
 						for campus in user.campus! {
-							page = 1;
-							while (true) {
-								msgLoading = "Get achievements campus \(campus.name) in page \(page)";
-								let tmp: [Achievement] = try await getValues("/v2/campus/\(campus.id)/achievements?per_page=100&page=\(page)");
-								if (tmp.isEmpty) {
-									break ;
-								}
-								for t in tmp {
-									achievements.append(t);
-								}
-								if (tmp.count < 100) {
-									break ;
-								}
-								page += 1;
+							let achievementsTmp: [Achievement] = try await getInMultiPage(
+								url: "/v2/campus/\(campus.id)/achievements?",
+								msg: "Get achievements campus \(campus.name)"
+							);
+							for tmp in achievementsTmp {
+								achievements.append(tmp);
 							}
 						}
 						
-						var achievementsUser: [AchievementUserItem] = [];
-						page = 1;
-						while (true) {
-							msgLoading = "Get achievements \(user.login!) in page \(page)";
-							let tmp: [AchievementUserItem] = try await getValues("/v2/achievements_users?filter[user_id]=\(String(user.id!))&per_page=100&page=\(page)")
-							if (tmp.isEmpty) {
-								break ;
-							}
-							for t in tmp {
-								achievementsUser.append(t);
-							}
-							if (tmp.count < 100) {
-								break ;
-							}
-							page += 1;
-						}
-						
+						let achievementsUser: [AchievementUserItem] = try await getInMultiPage(
+							url: "/v2/achievements_users?filter[user_id]=\(String(user.id!))&",
+							msg: "Get achievements \(user.login!)"
+						);
+
 						user.achivements = [];
 						for achievementUser in achievementsUser {
 							for achievement in achievements {

@@ -9,7 +9,7 @@ import Foundation
 
 struct AchievementUserItem: Codable {
 	let achievement_id: Int
-	var nbr_of_success: Int?
+	let nbr_of_success: Int?
 }
 
 struct Achievement: Codable {
