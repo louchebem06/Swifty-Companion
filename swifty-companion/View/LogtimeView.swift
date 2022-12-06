@@ -7,16 +7,43 @@
 
 import SwiftUI
 
-// https://www.youtube.com/watch?v=jBvkFKhnYLI
-
-struct MonthStruct
-{
-	var monthType: MonthType
-	var dayInt : Int
-	func day() -> String
-	{
-		return String(dayInt)
+class CalendarHelper {
+	let calendar = Calendar.current
+	let dateFormatter = DateFormatter()
+	
+	func monthYearString(_ date: Date) -> String {
+		dateFormatter.dateFormat = "LLL yyyy"
+		return dateFormatter.string(from: date)
 	}
+	
+	func plusMonth(_ date: Date) -> Date {
+		return calendar.date(byAdding: .month, value: 1, to: date)!
+	}
+	
+	func minusMonth(_ date: Date) -> Date {
+		return calendar.date(byAdding: .month, value: -1, to: date)!
+	}
+	
+	func daysInMonth(_ date: Date) -> Int {
+		let range = calendar.range(of: .day, in: .month, for: date)!
+		return range.count
+	}
+	
+	func dayOfMonth(_ date: Date) -> Int {
+		let components = calendar.dateComponents([.day], from: date)
+		return components.day!
+	}
+	
+	func firstOfMonth(_ date: Date) -> Date {
+		let components = calendar.dateComponents([.year, .month], from: date)
+		return calendar.date(from: components)!
+	}
+	
+	func weekDay(_ date: Date) -> Int {
+		let components = calendar.dateComponents([.weekday], from: date)
+		return components.weekday! - 1
+	}
+	
 }
 
 enum MonthType
@@ -26,55 +53,16 @@ enum MonthType
 	case Next
 }
 
-class CalendarHelper
+struct MonthStruct
 {
-	let calendar = Calendar.current
-	let dateFormatter = DateFormatter()
-	
-	func monthYearString(_ date: Date) -> String
-	{
-		dateFormatter.dateFormat = "LLL yyyy"
-		return dateFormatter.string(from: date)
+	var monthType: MonthType
+	var dayInt : Int
+	func day() -> String {
+		return String(dayInt)
 	}
-	
-	func plusMonth(_ date: Date) -> Date
-	{
-		return calendar.date(byAdding: .month, value: 1, to: date)!
-	}
-	
-	func minusMonth(_ date: Date) -> Date
-	{
-		return calendar.date(byAdding: .month, value: -1, to: date)!
-	}
-	
-	func daysInMonth(_ date: Date) -> Int
-	{
-		let range = calendar.range(of: .day, in: .month, for: date)!
-		return range.count
-	}
-	
-	func dayOfMonth(_ date: Date) -> Int
-	{
-		let components = calendar.dateComponents([.day], from: date)
-		return components.day!
-	}
-	
-	func firstOfMonth(_ date: Date) -> Date
-	{
-		let components = calendar.dateComponents([.year, .month], from: date)
-		return calendar.date(from: components)!
-	}
-	
-	func weekDay(_ date: Date) -> Int
-	{
-		let components = calendar.dateComponents([.weekday], from: date)
-		return components.weekday! - 1
-	}
-	
 }
 
-struct CalendarCell: View
-{
+struct CalendarCell: View {
 	@Binding var currentDate: Date;
 	let count : Int
 	let startingSpaces : Int
@@ -82,8 +70,7 @@ struct CalendarCell: View
 	let daysInPrevMonth : Int
 	let color: Color;
 	
-	var body: some View
-	{
+	var body: some View {
 		VStack {
 			color.overlay(
 				Text(monthStruct().day())
@@ -93,21 +80,16 @@ struct CalendarCell: View
 		}.frame(height: 50)
 	}
 
-	func textColor(type: MonthType) -> Color
-	{
+	func textColor(type: MonthType) -> Color {
 		return type == MonthType.Current ? Color.black : Color.gray
 	}
 	
-	func monthStruct() -> MonthStruct
-	{
+	func monthStruct() -> MonthStruct {
 		let start = startingSpaces == 0 ? startingSpaces + 7 : startingSpaces
-		if(count <= start)
-		{
+		if(count <= start) {
 			let day = daysInPrevMonth + count - start
 			return MonthStruct(monthType: MonthType.Previous, dayInt: day)
-		}
-		else if (count - start > daysInMonth)
-		{
+		} else if (count - start > daysInMonth) {
 			let day = count - start - daysInMonth
 			return MonthStruct(monthType: MonthType.Next, dayInt: day)
 		}
@@ -186,13 +168,10 @@ struct LogtimeView: View {
 		if (CalendarHelper().minusMonth(self.currentDate) < self.begin) {
 			_disablePrev = State(initialValue: true);
 		}
-		print(begin)
-		print(end);
 	}
 
 	var body: some View {
-		VStack(spacing: 1)
-		{
+		VStack(spacing: 1) {
 			DateScrollerView(
 				currentDate: $currentDate,
 				disablePrev: $disablePrev,
@@ -205,10 +184,8 @@ struct LogtimeView: View {
 		}
 	}
 
-	var dayOfWeekStack: some View
-	{
-		HStack(spacing: 1)
-		{
+	var dayOfWeekStack: some View {
+		HStack(spacing: 1) {
 			Text("Sun").dayOfWeek()
 			Text("Mon").dayOfWeek()
 			Text("Tue").dayOfWeek()
@@ -219,20 +196,15 @@ struct LogtimeView: View {
 		}
 	}
 	
-	var calendarGrid: some View
-	{
-		VStack(spacing: 1)
-		{
+	var calendarGrid: some View {
+		VStack(spacing: 1) {
 			let daysInMonth = CalendarHelper().daysInMonth(currentDate)
 			let startingSpaces = CalendarHelper().weekDay(currentDate)
 			let daysInPrevMonth = CalendarHelper().daysInMonth(currentDate)
 			
-			ForEach(0..<6)
-			{
-				row in
-				HStack(spacing: 1)
-				{
-					ForEach(1..<8) {column in
+			ForEach(0..<6){ row in
+				HStack(spacing: 1) {
+					ForEach(1..<8) { column in
 						let count = column + (row * 7)
 						CalendarCell(
 							currentDate: $currentDate,
@@ -240,7 +212,7 @@ struct LogtimeView: View {
 							startingSpaces: startingSpaces,
 							daysInMonth: daysInMonth,
 							daysInPrevMonth: daysInPrevMonth,
-							color: Color.blue
+							color: Color.blue.opacity(0)
 						);
 					}
 				}
@@ -255,20 +227,7 @@ struct LogtimeView_Previews: PreviewProvider {
 		LogtimeView([
 			Location(begin_at: "2022-12-04T09:08:35.000Z",
 					 end_at: "2022-12-04T18:25:30.000Z",
-					 host: "c1r1p1"),
-			Location(begin_at: "2021-12-01T09:08:35.000Z",
-					 end_at: "2021-12-01T18:25:30.000Z",
 					 host: "c1r1p1")
 		]);
     }
-}
-
-extension Text
-{
-	func dayOfWeek() -> some View
-	{
-		self.frame(maxWidth: .infinity)
-			.padding(.top, 1)
-			.lineLimit(1)
-	}
 }
