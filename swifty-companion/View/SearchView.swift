@@ -60,10 +60,11 @@ struct SearchView: View {
 								}
 							})
 						}
-						msgLoading = "Get locations";
+
 						var page: Int = 1;
 						var locations: [Location] = [];
 						while (true) {
+							msgLoading = "Locations \(user.login!) in page \(page)";
 							let temp: [Location] = try await getValues("/v2/users/\(String(user.id!))/locations?per_page=100&page=\(page)");
 							if (temp.isEmpty) {
 								break ;
@@ -75,7 +76,6 @@ struct SearchView: View {
 								break ;
 							}
 							page += 1;
-							msgLoading = "Locations found: \(locations.count)";
 						}
 						user.locations = locations;
 						
@@ -101,7 +101,7 @@ struct SearchView: View {
 						var achievementsUser: [AchievementUserItem] = [];
 						page = 1;
 						while (true) {
-							msgLoading = "Get achievements user in page \(page)";
+							msgLoading = "Get achievements \(user.login!) in page \(page)";
 							let tmp: [AchievementUserItem] = try await getValues("/v2/achievements_users?filter[user_id]=\(String(user.id!))&per_page=100&page=\(page)")
 							if (tmp.isEmpty) {
 								break ;
