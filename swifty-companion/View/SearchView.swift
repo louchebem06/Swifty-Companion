@@ -18,6 +18,19 @@ struct SearchView: View {
 	@State private var disabledSearchBar: Bool = false;
 	@State private var msgLoading: String = "";
 	
+	func getUser() async throws -> User {
+		var value: String = await Api.getValue("/v2/users/\(tmpInput)");
+		value = value.replacingOccurrences(of: "validated?", with: "validated", options: .literal, range: nil);
+		let data: Data = value.data(using: .utf8)!;
+		return (try JSONDecoder().decode(User.self, from: data));
+	}
+	
+	func getValues<T: Codable>(_ url: String) async throws -> [T] {
+		let value = await Api.getValue(url);
+		let data = value.data(using: .utf8)!;
+		return (try JSONDecoder().decode([T].self, from: data));
+	}
+	
 	func runSeach() {
 		disabledSearchBar = true;
 		msgLoading = "Initialisation request";
@@ -25,17 +38,12 @@ struct SearchView: View {
 			isRequestInProgress = true;
 			tmpInput = tmpInput.lowercased();
 			tmpInput = tmpInput.replacingOccurrences(of: " ", with: "-", options: .literal, range: nil);
-			msgLoading = "Search user";
-			var value: String = await Api.getValue("/v2/users/\(tmpInput)");
-			value = value.replacingOccurrences(of: "validated?", with: "validated", options: .literal, range: nil);
 			do {
-				var data: Data = value.data(using: .utf8)!;
-				user = try JSONDecoder().decode(User.self, from: data);
+				msgLoading = "Search user";
+				user = try await getUser();
 				if (user.id != nil) {
 					msgLoading = "Information coalitions";
-					value = await Api.getValue("/v2/users/\(String(user.id!))/coalitions?coalition[cover]");
-					data = value.data(using: .utf8)!;
-					user.coalitions = try JSONDecoder().decode([Coalition].self, from: data);
+					user.coalitions = try await getValues("/v2/users/\(String(user.id!))/coalitions?coalition[cover]");
 					if (user.coalitions == nil || user.coalitions!.isEmpty) {
 						errorNotCoalition();
 					} else {
@@ -62,9 +70,7 @@ struct SearchView: View {
 						var page: Int = 1;
 						var locations: [Location] = [];
 						while (true) {
-							value = await Api.getValue("/v2/users/\(String(user.id!))/locations?per_page=100&page=\(page)");
-							data = value.data(using: .utf8)!;
-							let temp: [Location] = try JSONDecoder().decode([Location].self, from: data)
+							let temp: [Location] = try await getValues("/v2/users/\(String(user.id!))/locations?per_page=100&page=\(page)");
 							if (temp.isEmpty) {
 								break ;
 							}
@@ -84,9 +90,7 @@ struct SearchView: View {
 							page = 1;
 							while (true) {
 								msgLoading = "Get achievements campus \(campus.name) in page \(page)";
-								value = await Api.getValue("/v2/campus/\(campus.id)/achievements?per_page=100&page=\(page)");
-								data = value.data(using: .utf8)!;
-								let tmp: [Achievement] = try JSONDecoder().decode([Achievement].self, from: data);
+								let tmp: [Achievement] = try await getValues("/v2/campus/\(campus.id)/achievements?per_page=100&page=\(page)");
 								if (tmp.isEmpty) {
 									break ;
 								}
@@ -104,9 +108,7 @@ struct SearchView: View {
 						page = 1;
 						while (true) {
 							msgLoading = "Get achievements user in page \(page)";
-							value = await Api.getValue("/v2/achievements_users?filter[user_id]=\(String(user.id!))&per_page=100&page=\(page)");
-							data = value.data(using: .utf8)!;
-							let tmp: [AchievementUserItem] = try JSONDecoder().decode([AchievementUserItem].self, from: data);
+							let tmp: [AchievementUserItem] = try await getValues("/v2/achievements_users?filter[user_id]=\(String(user.id!))&per_page=100&page=\(page)")
 							if (tmp.isEmpty) {
 								break ;
 							}
