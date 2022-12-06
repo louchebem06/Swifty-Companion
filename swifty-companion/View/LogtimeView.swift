@@ -7,85 +7,95 @@
 
 import SwiftUI
 
-struct Logtime {
-	let begin: Date
-	let end: Date
+// https://www.youtube.com/watch?v=jBvkFKhnYLI
+
+class DateHolder: ObservableObject {
+	@Published var date: Date;
+	
+	init(_ date: Date) {
+		self.date = date;
+	}
 }
 
-struct DateAndLogtime {
-	let day: Int
-	let month: Int
-	let year: Int
-	let timestamp: Int;
+class CalendarHelper {
+	let calendar = Calendar.current;
+	let dateFormatter = DateFormatter();
+	
+	func monthYearString(_ date: Date) -> String {
+		dateFormatter.dateFormat = "LLL yyyy";
+		return (dateFormatter.string(from: date));
+	}
+	
+	func plusMonth(_ date: Date) -> Date {
+		return (calendar.date(byAdding: .month, value: 1, to: date)!);
+	}
+	
+	func minusMonth(_ date: Date) -> Date {
+		return (calendar.date(byAdding: .month, value: -1, to: date)!);
+	}
+}
+
+struct DateScrollerView: View {
+	@EnvironmentObject var dateHolder: DateHolder;
+	@Binding var disablePrev: Bool;
+	@Binding var disableNext: Bool;
+	@Binding var begin: Date;
+	@Binding var end: Date;
+	
+	var body: some View {
+		HStack {
+			Spacer();
+			Button(action: previousMonth) {
+				Image(systemName: "arrow.left")
+					.imageScale(.large)
+					.font(Font.title.weight(.bold));
+			}.disabled(disablePrev);
+			Text(CalendarHelper().monthYearString(dateHolder.date))
+				.font(.title)
+				.bold()
+				.animation(.none)
+				.frame(maxWidth: .infinity);
+			Button(action: nextMonth) {
+				Image(systemName: "arrow.right")
+					.imageScale(.large)
+					.font(Font.title.weight(.bold));
+			}.disabled(disableNext);
+			Spacer();
+		}
+	}
+	
+	func previousMonth() {
+		dateHolder.date = CalendarHelper().minusMonth(dateHolder.date);
+	}
+	
+	func nextMonth() {
+		dateHolder.date = CalendarHelper().plusMonth(dateHolder.date);
+	}
 }
 
 struct LogtimeView: View {
-	let begin: Date;
-	let end: Date;
-	var logtimes: [DateAndLogtime] = [];
+	@State var begin: Date = Date();
+	@State var end: Date = Date();
+	@State var disablePrev: Bool = false;
+	@State var disableNext: Bool = true;
+	@ObservedObject var dateHolder: DateHolder;
 
 	init(_ locations: [Location]?) {
-		var logtimes: [Logtime] = [];
 		if (locations != nil) {
-			self.end = stringIsoToDate(locations![0].end_at);
-			self.begin = stringIsoToDate(locations![locations!.count - 1].begin_at);
-			for location in locations! {
-				// print(location.host);
-				logtimes.append(
-					Logtime(
-						begin: stringIsoToDate(location.begin_at),
-						end: stringIsoToDate(location.end_at)
-					)
-				);
-			}
-			for logtime in logtimes {
-				let begin = Calendar.current.dateComponents([.day, .year, .month, .hour, .minute, .second], from: logtime.begin);
-				let end = Calendar.current.dateComponents([.day, .year, .month, .hour, .minute, .second], from: logtime.end);
-				if (begin.day == end.day) {
-					self.logtimes.append(
-						DateAndLogtime(
-							day: begin.day!,
-							month: begin.month!,
-							year: begin.year!,
-							timestamp: Int(abs(logtime.end.timeIntervalSince1970 - logtime.begin.timeIntervalSince1970))
-						)
-					);
-				} else {
-					var dateComponents = DateComponents();
-					dateComponents.year = end.year;
-					dateComponents.month = end.month;
-					dateComponents.day = end.day;
-					dateComponents.timeZone = TimeZone(abbreviation: "UTC");
-					dateComponents.hour = 0;
-					dateComponents.minute = 0;
-					dateComponents.second = 0;
-					let tmp: Date = dateComposantToDate(dateComponents);
-					self.logtimes.append(
-						DateAndLogtime(
-							day: begin.day!,
-							month: begin.month!,
-							year: begin.year!,
-							timestamp: Int(abs(tmp.timeIntervalSince1970 - logtime.begin.timeIntervalSince1970))
-						)
-					);
-					self.logtimes.append(
-						DateAndLogtime(
-							day: end.day!,
-							month: end.month!,
-							year: end.year!,
-							timestamp: Int(abs(logtime.end.timeIntervalSince1970 - tmp.timeIntervalSince1970))
-						)
-					);
-				}
-			}
-		} else {
-			begin = Date();
-			end = Date();
+			let end = stringIsoToDate(locations![0].end_at);
+			let begin = stringIsoToDate(locations![locations!.count - 1].begin_at);
+			_end = State(initialValue: end);
+			_begin = State(initialValue: begin);
+		}
+		dateHolder = DateHolder(end);
+		if (CalendarHelper().minusMonth(dateHolder.date) < self.begin) {
+			disablePrev = true;
 		}
 	}
 
 	var body: some View {
-		Text("WIP Logtime");
+		DateScrollerView(disablePrev: $disablePrev, disableNext: $disableNext, begin: $begin, end: $end)
+			.environmentObject(dateHolder);
 	}
 }
 
@@ -95,6 +105,9 @@ struct LogtimeView_Previews: PreviewProvider {
 			Location(begin_at: "2022-12-04T09:08:35.000Z",
 					 end_at: "2022-12-04T18:25:30.000Z",
 					 host: "c1r1p1"),
+			Location(begin_at: "2022-12-01T09:08:35.000Z",
+					 end_at: "2022-12-31T18:25:30.000Z",
+					 host: "c1r1p1")
 		]);
     }
 }
