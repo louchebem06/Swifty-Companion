@@ -44,7 +44,7 @@ struct IntraView: View {
 			Button {
 				search = true;
 			}label: {
-				Label("", systemImage: "arrowtriangle.backward.fill")
+				Label("", systemImage: "chevron.left")
 			}.font(.system(size:20))
 				.foregroundColor(colorCoa)
 		)

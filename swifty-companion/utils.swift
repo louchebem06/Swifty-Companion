@@ -53,3 +53,11 @@ func stringIsoToDate(_ dateString: String?) -> Date {
 func dateComposantToDate(_ date: DateComponents) -> Date {
 	return (Calendar.current.date(from: date)!);
 }
+
+extension String {
+	func firstLetterInUpper() -> String {
+		return (
+			"\(self.prefix(1).uppercased())\(self.lowercased().dropFirst())"
+		);
+	}
+}

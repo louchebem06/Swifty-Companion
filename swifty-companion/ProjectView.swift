@@ -76,30 +76,55 @@ struct ProjectView: View {
 			}
 		}
 	}
-
-    var body: some View {
-		List (values) { value in
+	
+	func getChild(_ childs: [ProjectsItem]) -> some View {
+		ForEach(childs) {value in
 			HStack {
-				Text("\(value.name)");
+				Text("\t \(value.name)");
+				Spacer();
 				if (value.status == "finished") {
 					Text((value.validated ?? false) ? "✅" : "❌");
-					if (value.validated ?? false) {
-						if (value.occurrence == 0) {
-							Text("First try");
-						} else {
-							Text("In \(value.occurrence + 1) try")
-						}
-					}
 					if (value.final_mark != nil) {
 						Text("\(String(value.final_mark!))/100");
 					}
 				} else {
-					Text(value.status.replacingOccurrences(of: "_", with: " ").capitalized);
-				}
-				if (value.child != nil) {
-					Text("Subproject: \(String(value.child!.count))")
+					Text(value.status.replacingOccurrences(of: "_", with: " ").firstLetterInUpper());
 				}
 			}
 		}
+	}
+
+    var body: some View {
+		if (values.count == 0) {
+			Text("Not project found");
+		} else {
+			List (values) { value in
+				VStack {
+					HStack {
+						Text("\(value.name)");
+						Spacer();
+						if (value.status == "finished") {
+							Text((value.validated ?? false) ? "✅" : "❌");
+							if (value.final_mark != nil) {
+								Text("\(String(value.final_mark!))/100");
+							}
+						} else {
+							Text(value.status.replacingOccurrences(of: "_", with: " ").firstLetterInUpper());
+						}
+					}.fontWeight(.bold);
+					if (value.child != nil) {
+						VStack {
+							getChild(value.child!);
+						}.padding(.top, 10);
+					}
+				}
+			}
+		}
+	}
+}
+
+struct ProjectView_Previews: PreviewProvider {
+	static var previews: some View {
+		ProjectView([], 1);
 	}
 }
