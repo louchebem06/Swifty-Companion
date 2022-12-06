@@ -81,7 +81,7 @@ struct IntraView: View {
 					Label("Profil", systemImage: "person")
 				};
 				NavigationView {
-					SkillView(cursus)
+					SkillView(cursus, colorCoa)
 						.toolbar {
 							getToolBar();
 						}
