@@ -44,16 +44,10 @@ struct SearchView: View {
 				if (user.id != nil) {
 					msgLoading = "Information coalitions";
 					user.coalitions = try await getValues("/v2/users/\(String(user.id!))/coalitions?coalition[cover]");
-					if (user.coalitions == nil || user.coalitions!.isEmpty) {
-						errorNotCoalition();
-					} else {
+					if (user.coalitions != nil && !user.coalitions!.isEmpty) {
 						for n in 0..<user.cursus_users!.count {
-							let cursusUsers: CursusUser = user.cursus_users![n]!;
-							let idString: String = String(cursusUsers.cursus.id);
-							msgLoading = "Get empty skill for \(cursusUsers.cursus.name)";
-							let value = await Api.getValue("/v2/cursus/\(idString)/skills");
-							let data: Data = value.data(using: .utf8)!;
-							let skills: [SkillItem] = try JSONDecoder().decode([SkillItem].self, from: data);
+							msgLoading = "Get empty skill for \(user.cursus_users![n]!.cursus.name)";
+							let skills: [SkillItem] = try await getValues("/v2/cursus/\(String(user.cursus_users![n]!.cursus.id))/skills");
 							skills.forEach({skill in
 								var found: Bool = false;
 								user.cursus_users![n]!.skills.forEach({sk in
@@ -134,6 +128,8 @@ struct SearchView: View {
 						}
 
 						search = false;
+					} else {
+						errorNotCoalition();
 					}
 				} else {
 					errorUserNotFound();
