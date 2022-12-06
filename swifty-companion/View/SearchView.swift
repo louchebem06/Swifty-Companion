@@ -50,7 +50,7 @@ struct SearchView: View {
 		}
 		return (values);
 	}
-	
+
 	func runSeach() {
 		disabledSearchBar = true;
 		msgLoading = "Initialisation request";
@@ -64,62 +64,61 @@ struct SearchView: View {
 				if (user.id != nil) {
 					msgLoading = "Information coalitions";
 					user.coalitions = try await getValues("/v2/users/\(String(user.id!))/coalitions?coalition[cover]");
-					if (user.coalitions != nil && !user.coalitions!.isEmpty) {
-						for n in 0..<user.cursus_users!.count {
-							msgLoading = "Get empty skill for \(user.cursus_users![n]!.cursus.name)";
-							let skills: [SkillItem] = try await getValues("/v2/cursus/\(String(user.cursus_users![n]!.cursus.id))/skills");
-							skills.forEach({skill in
-								var found: Bool = false;
-								user.cursus_users![n]!.skills.forEach({sk in
-									if (sk.name == skill.name) {
-										found = true;
-									}
-								})
-								if (!found) {
-									user.cursus_users![n]!.skills.append(Skill(name: skill.name, level: 0.0))
+					if (user.coalitions == nil || user.coalitions!.isEmpty) {
+						throw RuntimeError("Not coalition realy ?");
+					}
+					for n in 0..<user.cursus_users!.count {
+						msgLoading = "Get empty skill for \(user.cursus_users![n]!.cursus.name)";
+						let skills: [SkillItem] = try await getValues("/v2/cursus/\(String(user.cursus_users![n]!.cursus.id))/skills");
+						skills.forEach({skill in
+							var found: Bool = false;
+							user.cursus_users![n]!.skills.forEach({sk in
+								if (sk.name == skill.name) {
+									found = true;
 								}
 							})
-						}
-
-						user.locations = try await getInMultiPage(
-							url: "/v2/users/\(String(user.id!))/locations?",
-							msg: "Get locations \(user.login!)"
-						);
-						
-						var achievements: [Achievement] = [];
-						for campus in user.campus! {
-							let achievementsTmp: [Achievement] = try await getInMultiPage(
-								url: "/v2/campus/\(campus.id)/achievements?",
-								msg: "Get achievements campus \(campus.name)"
-							);
-							for tmp in achievementsTmp {
-								achievements.append(tmp);
+							if (!found) {
+								user.cursus_users![n]!.skills.append(Skill(name: skill.name, level: 0.0))
 							}
-						}
-						
-						let achievementsUser: [AchievementUserItem] = try await getInMultiPage(
-							url: "/v2/achievements_users?filter[user_id]=\(String(user.id!))&",
-							msg: "Get achievements \(user.login!)"
-						);
-
-						user.achivements = [];
-						for achievementUser in achievementsUser {
-							for achievement in achievements {
-								if (achievement.id == achievementUser.achievement_id
-									&& achievement.nbr_of_success == achievementUser.nbr_of_success)
-								{
-									user.achivements?.append(achievement);
-									break ;
-								}
-							}
-						}
-
-						search = false;
-					} else {
-						errorNotCoalition();
+						})
 					}
+
+					user.locations = try await getInMultiPage(
+						url: "/v2/users/\(String(user.id!))/locations?",
+						msg: "Get locations \(user.login!)"
+					);
+					
+					var achievements: [Achievement] = [];
+					for campus in user.campus! {
+						let achievementsTmp: [Achievement] = try await getInMultiPage(
+							url: "/v2/campus/\(campus.id)/achievements?",
+							msg: "Get achievements campus \(campus.name)"
+						);
+						for tmp in achievementsTmp {
+							achievements.append(tmp);
+						}
+					}
+					
+					let achievementsUser: [AchievementUserItem] = try await getInMultiPage(
+						url: "/v2/achievements_users?filter[user_id]=\(String(user.id!))&",
+						msg: "Get achievements \(user.login!)"
+					);
+
+					user.achivements = [];
+					for achievementUser in achievementsUser {
+						for achievement in achievements {
+							if (achievement.id == achievementUser.achievement_id
+								&& achievement.nbr_of_success == achievementUser.nbr_of_success)
+							{
+								user.achivements?.append(achievement);
+								break ;
+							}
+						}
+					}
+
+					search = false;
 				} else {
-					errorUserNotFound();
+					throw RuntimeError("User not found");
 				}
 			} catch {
 				errorRequest(error);
@@ -128,18 +127,6 @@ struct SearchView: View {
 			disabledSearchBar = false;
 			msgLoading = "";
 		}
-	}
-	
-	func errorNotCoalition() -> Void {
-		titleError = "Error user";
-		messageError = "This user as not coalition! realy ?";
-		showAlert = true;
-	}
-	
-	func errorUserNotFound() -> Void {
-		titleError = "User not found";
-		messageError = "\(tmpInput) is not valid user 42";
-		showAlert = true;
 	}
 	
 	func errorRequest(_ error: any Error) -> Void {
