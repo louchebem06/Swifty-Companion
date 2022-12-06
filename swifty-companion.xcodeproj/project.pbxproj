@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		C14A68DA293D4C33007918D7 /* CursusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A68D9293D4C33007918D7 /* CursusView.swift */; };
 		C14A68DC293D4C49007918D7 /* SkillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A68DB293D4C49007918D7 /* SkillView.swift */; };
-		C1660F40293F6CAA00E5A107 /* RuntimeError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1660F3F293F6CAA00E5A107 /* RuntimeError.swift */; };
 		C1BD6DD3293C624800011908 /* swifty-companion.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C1BD6DD1293C624800011908 /* swifty-companion.xcdatamodeld */; };
 		C1BD6DD7293C6E5C00011908 /* CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BD6DD6293C6E5C00011908 /* CoreData.swift */; };
 		C1BDB2FD293E762400D8C220 /* LogtimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BDB2FC293E762400D8C220 /* LogtimeView.swift */; };
@@ -34,7 +33,6 @@
 /* Begin PBXFileReference section */
 		C14A68D9293D4C33007918D7 /* CursusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CursusView.swift; sourceTree = "<group>"; };
 		C14A68DB293D4C49007918D7 /* SkillView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillView.swift; sourceTree = "<group>"; };
-		C1660F3F293F6CAA00E5A107 /* RuntimeError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuntimeError.swift; sourceTree = "<group>"; };
 		C1BD6DD2293C624800011908 /* swifty-companion.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "swifty-companion.xcdatamodel"; sourceTree = "<group>"; };
 		C1BD6DD6293C6E5C00011908 /* CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreData.swift; sourceTree = "<group>"; };
 		C1BDB2FC293E762400D8C220 /* LogtimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogtimeView.swift; sourceTree = "<group>"; };
@@ -100,7 +98,6 @@
 				C1D759A32937F7AC00D96155 /* User.swift */,
 				C1D759A52937F8F500D96155 /* Token.swift */,
 				C1BDB300293EB17300D8C220 /* Achievement.swift */,
-				C1660F3F293F6CAA00E5A107 /* RuntimeError.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -234,7 +231,6 @@
 				C1BD6DD3293C624800011908 /* swifty-companion.xcdatamodeld in Sources */,
 				C1BDB2FD293E762400D8C220 /* LogtimeView.swift in Sources */,
 				C1BD6DD7293C6E5C00011908 /* CoreData.swift in Sources */,
-				C1660F40293F6CAA00E5A107 /* RuntimeError.swift in Sources */,
 				C1BDB303293EB3DD00D8C220 /* AchievementView.swift in Sources */,
 				C1D75998293762C400D96155 /* utils.swift in Sources */,
 				C1DD6CC8293A714000F63065 /* ProjectView.swift in Sources */,
