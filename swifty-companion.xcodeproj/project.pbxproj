@@ -51,7 +51,7 @@
 		C1D986D229354076002E1ACE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C1DD6CC5293A43B000F63065 /* IntraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntraView.swift; sourceTree = "<group>"; };
 		C1DD6CC7293A714000F63065 /* ProjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectView.swift; sourceTree = "<group>"; };
-		C1E64AC2293580000061A73A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		C1E64AC2293580000061A73A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +67,50 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C1660F3B293F576A00E5A107 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				C1D7599D2937685E00D96155 /* ContentView.swift */,
+				C1D759A12937A02800D96155 /* SearchView.swift */,
+				C1D7599B2937666300D96155 /* ProfilView.swift */,
+				C1DD6CC5293A43B000F63065 /* IntraView.swift */,
+				C1DD6CC7293A714000F63065 /* ProjectView.swift */,
+				C14A68D9293D4C33007918D7 /* CursusView.swift */,
+				C14A68DB293D4C49007918D7 /* SkillView.swift */,
+				C1BDB2FC293E762400D8C220 /* LogtimeView.swift */,
+				C1BDB302293EB3DD00D8C220 /* AchievementView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		C1660F3C293F57A900E5A107 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				C1BD6DD1293C624800011908 /* swifty-companion.xcdatamodeld */,
+				C1BD6DD6293C6E5C00011908 /* CoreData.swift */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
+		C1660F3D293F57F300E5A107 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				C1D759A32937F7AC00D96155 /* User.swift */,
+				C1D759A52937F8F500D96155 /* Token.swift */,
+				C1BDB300293EB17300D8C220 /* Achievement.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		C1660F3E293F581000E5A107 /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				C1D7599F29377B8500D96155 /* Api.swift */,
+				C1D75997293762C400D96155 /* utils.swift */,
+			);
+			path = Other;
+			sourceTree = "<group>";
+		};
 		C1D986BF29354076002E1ACE = {
 			isa = PBXGroup;
 			children = (
@@ -86,26 +130,14 @@
 		C1D986CA29354076002E1ACE /* swifty-companion */ = {
 			isa = PBXGroup;
 			children = (
-				C1D7599D2937685E00D96155 /* ContentView.swift */,
-				C1BDB300293EB17300D8C220 /* Achievement.swift */,
 				C1E64AC2293580000061A73A /* Info.plist */,
-				C1D986CB29354076002E1ACE /* swifty_companionApp.swift */,
 				C1D986CF29354076002E1ACE /* Assets.xcassets */,
+				C1D986CB29354076002E1ACE /* swifty_companionApp.swift */,
 				C1D986D129354076002E1ACE /* Preview Content */,
-				C1D75997293762C400D96155 /* utils.swift */,
-				C1D7599B2937666300D96155 /* ProfilView.swift */,
-				C1D7599F29377B8500D96155 /* Api.swift */,
-				C1D759A12937A02800D96155 /* SearchView.swift */,
-				C1D759A32937F7AC00D96155 /* User.swift */,
-				C1D759A52937F8F500D96155 /* Token.swift */,
-				C1DD6CC5293A43B000F63065 /* IntraView.swift */,
-				C1DD6CC7293A714000F63065 /* ProjectView.swift */,
-				C1BD6DD1293C624800011908 /* swifty-companion.xcdatamodeld */,
-				C1BD6DD6293C6E5C00011908 /* CoreData.swift */,
-				C14A68D9293D4C33007918D7 /* CursusView.swift */,
-				C14A68DB293D4C49007918D7 /* SkillView.swift */,
-				C1BDB2FC293E762400D8C220 /* LogtimeView.swift */,
-				C1BDB302293EB3DD00D8C220 /* AchievementView.swift */,
+				C1660F3C293F57A900E5A107 /* CoreData */,
+				C1660F3B293F576A00E5A107 /* View */,
+				C1660F3D293F57F300E5A107 /* Model */,
+				C1660F3E293F581000E5A107 /* Other */,
 			);
 			path = "swifty-companion";
 			sourceTree = "<group>";

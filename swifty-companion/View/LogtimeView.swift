@@ -85,7 +85,7 @@ struct LogtimeView: View {
 	}
 
 	var body: some View {
-		Text("Hello World");
+		Text("WIP Logtime");
 	}
 }
 
