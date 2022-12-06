@@ -50,6 +50,11 @@ struct SearchView: View {
 		}
 		return (values);
 	}
+	
+	enum ErrorSearch: Error {
+		case notCoalition
+		case userNotFound
+	}
 
 	func runSeach() {
 		disabledSearchBar = true;
@@ -65,7 +70,7 @@ struct SearchView: View {
 					msgLoading = "Information coalitions";
 					user.coalitions = try await getValues("/v2/users/\(String(user.id!))/coalitions?coalition[cover]");
 					if (user.coalitions == nil || user.coalitions!.isEmpty) {
-						throw RuntimeError("Not coalition realy ?");
+						throw ErrorSearch.notCoalition;
 					}
 					for n in 0..<user.cursus_users!.count {
 						msgLoading = "Get empty skill for \(user.cursus_users![n]!.cursus.name)";
@@ -82,7 +87,7 @@ struct SearchView: View {
 							}
 						})
 					}
-
+					
 					user.locations = try await getInMultiPage(
 						url: "/v2/users/\(String(user.id!))/locations?",
 						msg: "Get locations \(user.login!)"
@@ -103,7 +108,7 @@ struct SearchView: View {
 						url: "/v2/achievements_users?filter[user_id]=\(String(user.id!))&",
 						msg: "Get achievements \(user.login!)"
 					);
-
+					
 					user.achivements = [];
 					for achievementUser in achievementsUser {
 						for achievement in achievements {
@@ -115,11 +120,15 @@ struct SearchView: View {
 							}
 						}
 					}
-
+					
 					search = false;
 				} else {
-					throw RuntimeError("User not found");
+					throw ErrorSearch.userNotFound;
 				}
+			}catch ErrorSearch.notCoalition {
+				errorRequest("\(user.login!) not coalition!\nRealy ?");
+			} catch ErrorSearch.userNotFound {
+				errorRequest("\(tmpInput) user is not found!");
 			} catch {
 				errorRequest(error);
 			}
@@ -129,7 +138,7 @@ struct SearchView: View {
 		}
 	}
 	
-	func errorRequest(_ error: any Error) -> Void {
+	func errorRequest<T>(_ error: T) -> Void {
 		titleError = "Request error";
 		messageError = "Error: \(error)";
 		showAlert = true;
