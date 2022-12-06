@@ -42,7 +42,7 @@ struct SearchView: View {
 						for n in 0..<user.cursus_users!.count {
 							let cursusUsers: CursusUser = user.cursus_users![n]!;
 							let idString: String = String(cursusUsers.cursus.id);
-							msgLoading = "Get values skill cursus";
+							msgLoading = "Get empty skill for \(cursusUsers.cursus.name)";
 							let value = await Api.getValue("/v2/cursus/\(idString)/skills");
 							let data: Data = value.data(using: .utf8)!;
 							let skills: [SkillItem] = try JSONDecoder().decode([SkillItem].self, from: data);
@@ -78,8 +78,57 @@ struct SearchView: View {
 							msgLoading = "Locations found: \(locations.count)";
 						}
 						user.locations = locations;
-						// print(await Api.getValue("/v2/achievements_users?filter[user_id]=\(String(user.id!))"));
-						// print(await Api.getValue("/v2/achievements"))
+						
+						var achievements: [Achievement] = [];
+						for campus in user.campus! {
+							page = 1;
+							while (true) {
+								msgLoading = "Get achievements campus \(campus.name) in page \(page)";
+								value = await Api.getValue("/v2/campus/\(campus.id)/achievements?per_page=100&page=\(page)");
+								data = value.data(using: .utf8)!;
+								let tmp: [Achievement] = try JSONDecoder().decode([Achievement].self, from: data);
+								if (tmp.isEmpty) {
+									break ;
+								}
+								for t in tmp {
+									achievements.append(t);
+								}
+								if (tmp.count < 100) {
+									break ;
+								}
+								page += 1;
+							}
+						}
+						
+						var achievementsUser: [AchievementUserItem] = [];
+						page = 1;
+						while (true) {
+							msgLoading = "Get achievements user in page \(page)";
+							value = await Api.getValue("/v2/achievements_users?filter[user_id]=\(String(user.id!))&per_page=100&page=\(page)");
+							data = value.data(using: .utf8)!;
+							let tmp: [AchievementUserItem] = try JSONDecoder().decode([AchievementUserItem].self, from: data);
+							if (tmp.isEmpty) {
+								break ;
+							}
+							for t in tmp {
+								achievementsUser.append(t);
+							}
+							if (tmp.count < 100) {
+								break ;
+							}
+							page += 1;
+						}
+						
+						user.achivements = [];
+						for achievementUser in achievementsUser {
+							for achievement in achievements {
+								if (achievement.id == achievementUser.achievement_id) {
+									user.achivements?.append(achievement);
+									break ;
+								}
+							}
+						}
+
 						search = false;
 					}
 				} else {

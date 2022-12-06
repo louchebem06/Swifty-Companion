@@ -8,7 +8,6 @@
 import SwiftUI
 import SDWebImageSwiftUI
 
-
 struct ProfilView: View {
     
     let user: User;

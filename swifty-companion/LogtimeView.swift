@@ -83,7 +83,7 @@ struct LogtimeView: View {
 			end = Date();
 		}
 	}
-	
+
 	var body: some View {
 		Text("Hello World");
 	}

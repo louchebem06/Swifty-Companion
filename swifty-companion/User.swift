@@ -75,6 +75,16 @@ struct Location: Codable {
 	let host: String
 }
 
+struct Campus: Codable {
+	let id: Int
+	let name: String
+}
+
+struct CampusUser: Codable {
+	let campus_id: Int
+	let is_primary: Bool
+}
+
 struct User: Codable {
     var id: Int?
     var email: String?
@@ -90,4 +100,7 @@ struct User: Codable {
     var projects_users: [ProjectsUser?]?
 	var coalitions: [Coalition?]?
 	var locations: [Location]?
+	var achivements: [Achievement]?
+	var campus: [Campus]?
+	var campus_users: [CampusUser]?
 }

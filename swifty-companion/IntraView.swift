@@ -99,6 +99,16 @@ struct IntraView: View {
 					.tabItem {
 					Label("Projects", systemImage: "square.and.pencil")
 				};
+				NavigationView {
+					AchievementView(user.achivements!)
+						.toolbar {
+							getToolBar();
+						}
+						.navigationTitle("Achievements");
+				}
+					.tabItem {
+					Label("Achievements", systemImage: "trophy")
+				};
 			}.accentColor(colorCoa);
 		}
     }
