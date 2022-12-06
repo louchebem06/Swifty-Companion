@@ -122,7 +122,9 @@ struct SearchView: View {
 						user.achivements = [];
 						for achievementUser in achievementsUser {
 							for achievement in achievements {
-								if (achievement.id == achievementUser.achievement_id) {
+								if (achievement.id == achievementUser.achievement_id
+									&& achievement.nbr_of_success == achievementUser.nbr_of_success)
+								{
 									user.achivements?.append(achievement);
 									break ;
 								}

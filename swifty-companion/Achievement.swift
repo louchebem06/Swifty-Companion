@@ -9,6 +9,7 @@ import Foundation
 
 struct AchievementUserItem: Codable {
 	let achievement_id: Int
+	var nbr_of_success: Int?
 }
 
 struct Achievement: Codable {
@@ -17,9 +18,5 @@ struct Achievement: Codable {
 	let description: String
 	let visible: Bool?
 	let image: String?
-	//let title: String?
-	//let kind: String
-	//let tier: String
-	//let parent: ?
-	//let nbr_of_success: Int
+	let nbr_of_success: Int?
 }
