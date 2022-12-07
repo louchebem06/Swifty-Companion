@@ -73,7 +73,7 @@ struct IntraView: View {
 				NavigationView {
 					ScrollView {
 						ProfilView(user);
-						LogtimeView(user.locations);
+						LogtimeView(user.locations, colorCoa);
 					}.toolbar {
 						getToolBar();
 					}.navigationTitle("Profil");

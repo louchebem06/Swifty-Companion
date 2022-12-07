@@ -7,6 +7,13 @@
 
 import SwiftUI
 
+enum MonthType
+{
+	case Previous
+	case Current
+	case Next
+}
+
 class CalendarHelper {
 	let calendar = Calendar.current
 	let dateFormatter = DateFormatter()
@@ -44,19 +51,33 @@ class CalendarHelper {
 		return components.weekday! - 1
 	}
 	
-}
-
-enum MonthType
-{
-	case Previous
-	case Current
-	case Next
+	func dayDate(_ date: Date, _ type: MonthType, _ day: Int) -> Date {
+		var tmp: DateComponents = calendar.dateComponents(
+			[.year, .month, .day],
+			from: date
+		)
+		tmp.day = day;
+		if (type == MonthType.Previous) {
+			return (minusMonth(dateComposantToDate(tmp)));
+		} else if (type == MonthType.Next) {
+			return (plusMonth(dateComposantToDate(tmp)));
+		}
+		return (dateComposantToDate(tmp));
+	}
+	
+	func dateToDate(_ date: Date) -> Date {
+		let tmp: DateComponents = calendar.dateComponents(
+			[.year, .month, .day],
+			from: date
+		)
+		return (dateComposantToDate(tmp));
+	}
 }
 
 struct MonthStruct
 {
 	var monthType: MonthType
-	var dayInt : Int
+	var dayInt: Int
 	func day() -> String {
 		return String(dayInt)
 	}
@@ -69,11 +90,39 @@ struct CalendarCell: View {
 	let daysInMonth : Int
 	let daysInPrevMonth : Int
 	let color: Color;
+	var percent: Double = 0.0;
+	
+	init(_ currentDate: Binding<Date>,
+		 _ count: Int,
+		 _ startingSpaces: Int,
+		 _ daysInMonth: Int,
+		 _ daysInPrevMonth: Int,
+		 _ color: Color,
+		 _ logtimes: Dictionary<Date, Int>)
+	{
+		self._currentDate = currentDate;
+		self.count = count;
+		self.startingSpaces = startingSpaces;
+		self.daysInMonth = daysInMonth;
+		self.daysInPrevMonth = daysInPrevMonth;
+		self.color = color;
+		
+		let caseDay: Date = CalendarHelper().dayDate(
+			self.currentDate,
+			monthStruct().monthType,
+			Int(monthStruct().day())!
+		);
+
+		let oneDay: Int = 24*60*60;
+		if (logtimes[caseDay] != nil) {
+			self.percent = Double(logtimes[caseDay]! * 100 / oneDay) / 100;
+		}
+	}
 	
 	var body: some View {
 		VStack {
-			color.overlay(
-				Text(monthStruct().day())
+			color.opacity(percent).overlay(
+				Text("\(monthStruct().day())")
 					.foregroundColor(textColor(type: monthStruct().monthType))
 					.frame(maxWidth: .infinity, maxHeight: .infinity)
 			)
@@ -156,14 +205,36 @@ struct LogtimeView: View {
 	@State var disablePrev: Bool = false;
 	@State var disableNext: Bool = true;
 	@State var currentDate: Date = Date();
+	var logtimes: Dictionary<Date, Int> = Dictionary();
+	let colorCoa: Color;
 
-	init(_ locations: [Location]?) {
+	init(_ locations: [Location]?, _ colorCoa: Color) {
+		self.colorCoa = colorCoa;
 		if (locations != nil) {
 			let end = stringIsoToDate(locations![0].end_at);
 			let begin = stringIsoToDate(locations![locations!.count - 1].begin_at);
 			_end = State(initialValue: end);
 			_begin = State(initialValue: begin);
 			_currentDate = State(initialValue: end);
+			
+			for location in locations! {
+				let begin_at = stringIsoToDate(location.begin_at);
+				let end_at = stringIsoToDate(location.end_at);
+				let begin = CalendarHelper().dateToDate(begin_at);
+				let end = CalendarHelper().dateToDate(end_at);
+				if (logtimes[begin] == nil) {
+					logtimes[begin] = 0;
+				}
+				if (logtimes[end] == nil) {
+					logtimes[end] = 0;
+				}
+				if (begin == end) {
+					logtimes[begin]! += Int(end_at.timeIntervalSince1970 - begin_at.timeIntervalSince1970);
+				} else {
+					logtimes[begin]! += Int(end.timeIntervalSince1970 - begin_at.timeIntervalSince1970);
+					logtimes[end]! += Int(end_at.timeIntervalSince1970 - end.timeIntervalSince1970);
+				}
+			}
 		}
 		if (CalendarHelper().minusMonth(self.currentDate) < self.begin) {
 			_disablePrev = State(initialValue: true);
@@ -207,12 +278,13 @@ struct LogtimeView: View {
 					ForEach(1..<8) { column in
 						let count = column + (row * 7)
 						CalendarCell(
-							currentDate: $currentDate,
-							count: count,
-							startingSpaces: startingSpaces,
-							daysInMonth: daysInMonth,
-							daysInPrevMonth: daysInPrevMonth,
-							color: Color.blue.opacity(0)
+							$currentDate,
+							count,
+							startingSpaces,
+							daysInMonth,
+							daysInPrevMonth,
+							colorCoa,
+							logtimes
 						);
 					}
 				}
@@ -220,14 +292,4 @@ struct LogtimeView: View {
 		}
 		.frame(maxHeight: .infinity)
 	}
-}
-
-struct LogtimeView_Previews: PreviewProvider {
-    static var previews: some View {
-		LogtimeView([
-			Location(begin_at: "2022-12-04T09:08:35.000Z",
-					 end_at: "2022-12-04T18:25:30.000Z",
-					 host: "c1r1p1")
-		]);
-    }
 }
